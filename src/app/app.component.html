@@ -1,4 +1,7 @@
-<app-navbar></app-navbar>
-<app-display [searchFilters]="searchFilters"></app-display>
-
-<app-search (searchFilters)="receiveSearchFilters($event)"></app-search>
+<div class="sticky top-0 z-10 bg-white">
+  <app-navbar></app-navbar>
+  <app-search></app-search>
+</div>
+<div class="overflow-y-auto">
+  <app-display></app-display>
+</div>

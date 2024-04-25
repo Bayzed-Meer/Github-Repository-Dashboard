@@ -1,12 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { CardComponent } from '../card/card.component';
+import { GridComponent } from '../grid/grid.component';
 
 @Component({
   selector: 'app-display',
   standalone: true,
-  imports: [],
+  imports: [CardComponent, GridComponent],
   templateUrl: './display.component.html',
   styleUrl: './display.component.scss',
 })
-export class DisplayComponent {
-  @Input() searchFilters: any;
-}
+export class DisplayComponent {}

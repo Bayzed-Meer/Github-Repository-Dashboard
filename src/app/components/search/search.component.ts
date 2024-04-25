@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   AutoCompleteModule,
@@ -7,6 +7,7 @@ import {
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/language.model';
 import { CommonModule } from '@angular/common';
+import { FilterService } from '../../services/filter.service';
 
 @Component({
   selector: 'app-search',
@@ -16,15 +17,16 @@ import { CommonModule } from '@angular/common';
   styleUrl: './search.component.scss',
 })
 export class SearchComponent {
-  languageData: [] = [];
-  sortData: string[] = ['asc', 'desc'];
+  languageData: string[] = [];
+  orderData: string[] = ['asc', 'desc'];
   selectedLanguage: string = 'javaScript';
-  sort: string = 'asc';
+  selectedOrder: string = 'desc';
   showError: boolean = false;
 
-  @Output() searchFilters = new EventEmitter<any>();
-
-  constructor(private languageService: LanguageService) {}
+  constructor(
+    private languageService: LanguageService,
+    private filterService: FilterService
+  ) {}
 
   ngOnInit() {
     this.fetchLanguages();
@@ -42,13 +44,11 @@ export class SearchComponent {
   }
 
   onSearch() {
-    if (this.selectedLanguage === null) this.showError = true;
-    else {
+    if (!this.languageData.includes(this.selectedLanguage)) {
+      this.showError = true;
+    } else {
       this.showError = false;
-      this.searchFilters.emit({
-        language: this.selectedLanguage,
-        sort: this.sort,
-      });
+      this.filterService.setFilters(this.selectedLanguage, this.selectedOrder);
     }
   }
 }

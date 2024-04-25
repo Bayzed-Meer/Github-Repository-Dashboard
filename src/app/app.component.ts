@@ -21,9 +21,4 @@ import { DisplayComponent } from './components/display/display.component';
 })
 export class AppComponent {
   title = 'Github-Repository-Dashboard';
-  searchFilters: any;
-
-  receiveSearchFilters(filters: any) {
-    this.searchFilters = filters;
-  }
 }
