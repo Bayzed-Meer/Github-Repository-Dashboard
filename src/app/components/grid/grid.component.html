@@ -1,1 +1,27 @@
-<p>grid works!</p>
+<ejs-grid [dataSource]="repos">
+  <e-columns>
+    <e-column field="name" headerText="Repository Name" width="90"></e-column>
+    <e-column
+      field="description"
+      headerText="Description"
+      width="120"
+    ></e-column>
+    <e-column field="language" headerText="Language" width="60"></e-column>
+
+    <e-column headerText="Repository Link" width="120"
+      ><ng-template #template let-data>
+        <a (click)="onClick(data.html_url)" class="cursor-pointer">
+          {{ data.html_url }}
+        </a>
+      </ng-template>
+    </e-column>
+    <e-column field="owner.login" headerText="Username" width="60"></e-column>
+    <e-column field="stargazers_count" headerText="Stars" width="40"></e-column>
+    <e-column
+      field="updated_at"
+      headerText="Updated At"
+      format="yMd"
+      width="80"
+    ></e-column>
+  </e-columns>
+</ejs-grid>
