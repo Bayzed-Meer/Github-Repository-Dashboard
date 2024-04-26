@@ -19,7 +19,7 @@ import { FilterService } from '../../services/filter.service';
 export class SearchComponent {
   languageData: string[] = [];
   orderData: string[] = ['asc', 'desc'];
-  selectedLanguage: string = 'javaScript';
+  selectedLanguage: string = 'JavaScript';
   selectedOrder: string = 'desc';
   showError: boolean = false;
 

@@ -9,7 +9,7 @@ import { map } from 'rxjs/internal/operators/map';
 })
 export class FilterService {
   private selectedLanguageSubject: BehaviorSubject<string> =
-    new BehaviorSubject<string>('javaScript');
+    new BehaviorSubject<string>('JavaScript');
   private orderSubject: BehaviorSubject<string> = new BehaviorSubject<string>(
     'desc'
   );

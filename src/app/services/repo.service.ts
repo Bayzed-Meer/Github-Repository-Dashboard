@@ -7,10 +7,15 @@ import { FilterService } from './filter.service';
   providedIn: 'root',
 })
 export class RepoService {
-  private baseUrl = 'https://api.github.com/search/repositories';
+  private baseUrl: string = 'https://api.github.com/search/repositories';
   private repositoriesSubject: BehaviorSubject<any[]> = new BehaviorSubject<
     any[]
   >([]);
+  searchSource: string = 'filter';
+
+  private currentPage: number = 1;
+  private currentLanguage: string = '';
+  private currentOrder: string = '';
 
   constructor(private http: HttpClient, private filterService: FilterService) {
     this.fetchFilters();
@@ -25,28 +30,42 @@ export class RepoService {
         })
       )
       .subscribe((filters) => {
-        this.searchRepositories(filters.language, filters.order, 1, 50);
+        this.currentLanguage = filters.language;
+        this.currentOrder = filters.order;
+        this.searchSource = 'filter';
+        this.currentPage = 1;
+        this.searchRepositories(
+          this.currentLanguage,
+          this.currentOrder,
+          this.currentPage
+        );
       });
   }
 
-  searchRepositories(
-    language: string,
-    order: string,
-    page: number,
-    perPage: number
-  ): void {
+  searchRepositories(language: string, order: string, page: number = 1): void {
     let params = new HttpParams();
     params = params.append('q', `language:${language}`);
     params = params.append('sort', 'stars');
     params = params.append('order', order);
     params = params.append('page', page.toString());
-    params = params.append('per_page', perPage.toString());
+    params = params.append('per_page', '50');
 
-    console.log('search called');
+    console.log('search called from:', this.searchSource);
+    console.log(this.baseUrl + params);
 
     this.http.get<any>(this.baseUrl, { params }).subscribe((data) => {
       this.repositoriesSubject.next(data.items);
     });
+  }
+
+  fetchNextPage(): void {
+    this.currentPage++;
+    this.searchSource = 'fetchNextPage';
+    this.searchRepositories(
+      this.currentLanguage,
+      this.currentOrder,
+      this.currentPage
+    );
   }
 
   getRepositories(): Observable<any[]> {
