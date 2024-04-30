@@ -34,6 +34,7 @@ export class RepoService {
         this.currentOrder = filters.order;
         this.searchSource = 'filter';
         this.currentPage = 1;
+
         this.searchRepositories(
           this.currentLanguage,
           this.currentOrder,

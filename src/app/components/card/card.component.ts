@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RepoService } from '../../services/repo.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { RepoInViewDirective } from '../../directives/repo-in-view.directive';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule, InfiniteScrollModule],
+  imports: [CommonModule, RepoInViewDirective],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
 })
@@ -40,7 +40,7 @@ export class CardComponent implements OnInit, OnDestroy {
     }
   }
 
-  onScroll() {
+  loadRepos() {
     this.repoService.fetchNextPage();
   }
 
