@@ -3,11 +3,12 @@ import { RepoService } from '../../services/repo.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RepoInViewDirective } from '../../directives/repo-in-view.directive';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule, RepoInViewDirective],
+  imports: [CommonModule, RepoInViewDirective, LoadingSpinnerComponent],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
 })
@@ -25,12 +26,9 @@ export class CardComponent implements OnInit, OnDestroy {
     this.repoSubscription = this.repoService
       .getRepositories()
       .subscribe((newRepos) => {
-        if (this.repoService.searchSource === 'filter') {
-          this.repos = newRepos;
-          this.scrollToTop();
-        } else {
-          this.repos = [...this.repos, ...newRepos];
-        }
+        if (this.repoService.searchSource === 'filter') this.scrollToTop();
+        this.repos = newRepos;
+        console.log(this.repos.length);
       });
   }
 

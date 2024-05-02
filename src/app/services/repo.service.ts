@@ -55,7 +55,8 @@ export class RepoService {
     console.log(this.baseUrl + params);
 
     this.http.get<any>(this.baseUrl, { params }).subscribe((data) => {
-      this.repositoriesSubject.next(data.items);
+      const currentRepos = this.repositoriesSubject.getValue();
+      this.repositoriesSubject.next([...currentRepos, ...data.items]);
     });
   }
 

@@ -1,33 +1,37 @@
-<div class="w-3/4 mx-auto my-8">
-  <ejs-grid [dataSource]="repos">
+<div class="w-3/4 mx-auto">
+  <ejs-grid #grid [dataSource]="repos" (dataBound)="onGridDataBound()">
     <e-columns>
-      <e-column field="name" headerText="Repository Name" width="90"></e-column>
+      <e-column field="rowIndex" headerText="Number"></e-column>
+      <e-column field="name" headerText="Repository Name"></e-column>
       <e-column
         field="description"
         headerText="Description"
         width="120"
       ></e-column>
-      <e-column field="language" headerText="Language" width="60"></e-column>
+      <e-column field="language" headerText="Language"></e-column>
 
-      <e-column headerText="Repository Link" width="120"
+      <e-column headerText="Repository Link"
         ><ng-template #template let-data>
           <a (click)="onClick(data.html_url)" class="cursor-pointer">
             {{ data.html_url }}
           </a>
         </ng-template>
       </e-column>
-      <e-column field="owner.login" headerText="Username" width="60"></e-column>
-      <e-column
-        field="stargazers_count"
-        headerText="Stars"
-        width="40"
-      ></e-column>
+      <e-column field="owner.login" headerText="Username"></e-column>
+      <e-column field="stargazers_count" headerText="Stars"></e-column>
       <e-column
         field="updated_at"
         headerText="Updated At"
         format="yMd"
-        width="80"
       ></e-column>
     </e-columns>
   </ejs-grid>
+  <div
+    *ngIf="gridInitialized"
+    appRepoInView
+    (targetInview)="loadRepos()"
+    class="mt-2 flex justify-center items-center"
+  >
+    <app-loading-spinner></app-loading-spinner>
+  </div>
 </div>

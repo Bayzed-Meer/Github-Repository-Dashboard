@@ -12,7 +12,7 @@ import {
   standalone: true,
 })
 export class RepoInViewDirective implements OnInit, OnDestroy {
-  @Output() cardInView: EventEmitter<void> = new EventEmitter<void>();
+  @Output() targetInview: EventEmitter<void> = new EventEmitter<void>();
 
   private intersectionObserver: IntersectionObserver | undefined;
 
@@ -22,7 +22,7 @@ export class RepoInViewDirective implements OnInit, OnDestroy {
     this.intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          this.cardInView.emit();
+          this.targetInview.emit();
         }
       });
     });
