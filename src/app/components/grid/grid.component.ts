@@ -47,10 +47,6 @@ export class GridComponent {
       });
   }
 
-  getIndex(record: any): number {
-    return this.repos.indexOf(record) + 1;
-  }
-
   scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

@@ -1,4 +1,7 @@
 <div class="flex flex-col">
+  <div>
+    <app-search></app-search>
+  </div>
   <div class="flex justify-center mb-4">
     <button
       class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded flex items-center"
@@ -10,7 +13,7 @@
     </button>
   </div>
 
-  <div class="overflow-y-auto h-[73vh]">
+  <div class="overflow-y-auto h-[75vh]">
     <app-card *ngIf="showCard"></app-card>
     <app-grid *ngIf="!showCard"></app-grid>
   </div>

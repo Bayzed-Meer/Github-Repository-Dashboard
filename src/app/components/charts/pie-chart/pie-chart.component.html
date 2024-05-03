@@ -1,0 +1,15 @@
+<div class="w-3/4 mx-auto mt-8">
+  <ejs-accumulationchart
+    id="chart-container"
+    [tooltip]="tooltip"
+    [title]="title"
+  >
+    <e-accumulation-series-collection>
+      <e-accumulation-series
+        [dataSource]="pieData"
+        xName="x"
+        yName="y"
+      ></e-accumulation-series>
+    </e-accumulation-series-collection>
+  </ejs-accumulationchart>
+</div>
