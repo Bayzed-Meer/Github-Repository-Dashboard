@@ -1,12 +1,12 @@
-<div class="grid grid-cols-4 gap-6 w-3/4 mx-auto" #card>
+<div
+  id="card"
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-3/4 mx-auto"
+>
   <ng-container *ngFor="let repo of repos; let i = index">
-    <div
-      [id]="'repo-' + (i + 1)"
-      class="rounded-lg overflow-hidden shadow-md bg-white"
-    >
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
       <div class="px-6 py-4">
         <h3 class="text-xl font-semibold text-gray-800 mb-2">
-          {{ i + 1 }} {{ repo.name }}
+          {{ repo.name }}
         </h3>
         <p class="text-gray-600 mb-4">{{ repo.description }}</p>
       </div>
@@ -17,7 +17,8 @@
           Language: <span class="font-semibold">{{ repo.language }}</span>
         </p>
         <p class="text-sm text-gray-500">
-          Stars: <span class="font-semibold">{{ repo.stargazers_count }}</span>
+          <i class="fa-solid fa-star text-purple-500 pr-2"></i>
+          <span class="font-semibold">{{ repo.stargazers_count }}</span>
         </p>
       </div>
       <div
@@ -29,8 +30,8 @@
         </p>
         <a
           href="{{ repo.html_url }}"
-          class="text-pink-500 hover:underline font-semibold"
           target="_blank"
+          class="text-white text-sm font-semibold px-2 py-1 rounded-full bg-pink-500 hover:bg-pink-600 transition duration-300 ease-in-out"
           >View Repo</a
         >
       </div>

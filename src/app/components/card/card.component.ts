@@ -50,11 +50,6 @@ export class CardComponent implements OnInit, OnDestroy {
   }
 
   scrollToTop(): void {
-    if (this.card) {
-      this.card.nativeElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
+    document.getElementById('card')!.scrollIntoView();
   }
 }

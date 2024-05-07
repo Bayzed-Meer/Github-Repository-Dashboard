@@ -1,6 +1,6 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { RepoService } from '../../services/repo.service';
 import { GridModule } from '@syncfusion/ej2-angular-grids';
 import { RepoInViewDirective } from '../../directives/repo-in-view.directive';
@@ -19,8 +19,6 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
   styleUrl: './grid.component.scss',
 })
 export class GridComponent {
-  @ViewChild('grid') grid: ElementRef | undefined;
-
   repos: any[] = [];
   repoSubscription: Subscription | undefined;
   intersectionObserver: IntersectionObserver | undefined;
@@ -40,11 +38,16 @@ export class GridComponent {
     this.repoSubscription = this.repoService
       .getRepositories()
       .subscribe((newRepos) => {
+        if (this.repoService.searchSource === 'filter') this.scrollToTop();
         newRepos.forEach((repo, index) => {
           repo.rowIndex = index + 1;
         });
         this.repos = newRepos;
       });
+  }
+
+  scrollToTop(): void {
+    document.getElementById('grid')!.scrollIntoView();
   }
 
   ngOnDestroy(): void {
