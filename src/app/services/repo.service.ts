@@ -8,15 +8,17 @@ import {
   map,
 } from 'rxjs';
 import { FilterService } from './filter.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RepoCount } from '../models/repository-count.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RepoService {
   private baseUrl: string = 'https://api.github.com/search/repositories?';
-  private repositoriesSubject: BehaviorSubject<any[]> = new BehaviorSubject<
-    any[]
-  >([]);
+  private repositories$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(
+    []
+  );
   searchSource: string = 'filter';
 
   private currentPage: number = 1;
@@ -31,6 +33,7 @@ export class RepoService {
     this.filterService
       .getFilters()
       .pipe(
+        takeUntilDestroyed(),
         distinctUntilChanged((prev, curr) => {
           return prev.language === curr.language && prev.order === curr.order;
         })
@@ -49,8 +52,8 @@ export class RepoService {
       });
   }
 
-  getRepoCounts(languages: string[]): Observable<any[]> {
-    const requests: Observable<any>[] = languages.map((language) =>
+  getRepoCounts(languages: string[]): Observable<RepoCount[]> {
+    const requests: Observable<RepoCount>[] = languages.map((language) =>
       this.http.get<any>(this.baseUrl + `q=language:${language}`).pipe(
         map((response) => ({
           language: language,
@@ -62,13 +65,13 @@ export class RepoService {
     return forkJoin(requests);
   }
 
-  fetchRepositories(language: string): Observable<any[]> {
+  fetchBarChartRepositories(language: string): Observable<any[]> {
     let params = new HttpParams();
     params = params.append('q', `language:${language}`);
     params = params.append('sort', 'stars');
     params = params.append('order', 'desc');
     params = params.append('page', '1');
-    params = params.append('per_page', '10');
+    params = params.append('per_page', '50');
 
     return this.http.get<any>(this.baseUrl, { params });
   }
@@ -81,15 +84,11 @@ export class RepoService {
     params = params.append('page', page.toString());
     params = params.append('per_page', '50');
 
-    console.log('search called from:', this.searchSource);
-    console.log(this.baseUrl + params);
-
     this.http.get<any>(this.baseUrl, { params }).subscribe((data) => {
-      if (this.searchSource === 'filter')
-        this.repositoriesSubject.next(data.items);
+      if (this.searchSource === 'filter') this.repositories$.next(data.items);
       else {
-        const currentRepos = this.repositoriesSubject.getValue();
-        this.repositoriesSubject.next([...currentRepos, ...data.items]);
+        const currentRepos = this.repositories$.getValue();
+        this.repositories$.next([...currentRepos, ...data.items]);
       }
     });
   }
@@ -105,6 +104,6 @@ export class RepoService {
   }
 
   getRepositories(): Observable<any[]> {
-    return this.repositoriesSubject.asObservable();
+    return this.repositories$.asObservable();
   }
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CardComponent } from '../card/card.component';
 import { GridComponent } from '../grid/grid.component';
-import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../search/search.component';
 
 @Component({

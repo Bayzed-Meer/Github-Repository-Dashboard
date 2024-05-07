@@ -1,7 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RepoService } from '../../services/repo.service';
-import { Subscription } from 'rxjs';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { RepoService } from '../../services/repo.service';
 import { RepoInViewDirective } from '../../directives/repo-in-view.directive';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
@@ -13,6 +19,8 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
   styleUrl: './card.component.scss',
 })
 export class CardComponent implements OnInit, OnDestroy {
+  @ViewChild('card') card: ElementRef | undefined;
+
   repos: any[] = [];
   private repoSubscription: Subscription | undefined;
 
@@ -28,7 +36,6 @@ export class CardComponent implements OnInit, OnDestroy {
       .subscribe((newRepos) => {
         if (this.repoService.searchSource === 'filter') this.scrollToTop();
         this.repos = newRepos;
-        console.log(this.repos.length);
       });
   }
 
@@ -43,6 +50,11 @@ export class CardComponent implements OnInit, OnDestroy {
   }
 
   scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.card) {
+      this.card.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
   }
 }

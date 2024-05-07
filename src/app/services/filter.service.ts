@@ -1,30 +1,26 @@
 import { Injectable } from '@angular/core';
-import { combineLatest } from 'rxjs';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { Observable } from 'rxjs/internal/Observable';
-import { map } from 'rxjs/internal/operators/map';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
+import { FilterOptions } from '../models/filter-options.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilterService {
-  private selectedLanguageSubject: BehaviorSubject<string> =
+  private selectedLanguage$: BehaviorSubject<string> =
     new BehaviorSubject<string>('JavaScript');
-  private orderSubject: BehaviorSubject<string> = new BehaviorSubject<string>(
-    'desc'
-  );
+  private order$: BehaviorSubject<string> = new BehaviorSubject<string>('desc');
 
   constructor() {}
 
   setFilters(language: string, order: string) {
-    this.selectedLanguageSubject.next(language);
-    this.orderSubject.next(order);
+    this.selectedLanguage$.next(language);
+    this.order$.next(order);
   }
 
-  getFilters(): Observable<any> {
+  getFilters(): Observable<FilterOptions> {
     return combineLatest([
-      this.selectedLanguageSubject.asObservable(),
-      this.orderSubject.asObservable(),
+      this.selectedLanguage$.asObservable(),
+      this.order$.asObservable(),
     ]).pipe(
       map(([selectedLanguage, order]) => ({
         language: selectedLanguage,

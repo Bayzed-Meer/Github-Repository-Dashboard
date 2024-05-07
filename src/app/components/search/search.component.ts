@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import {
   AutoCompleteModule,
   DropDownListModule,
 } from '@syncfusion/ej2-angular-dropdowns';
 import { LanguageService } from '../../services/language.service';
-import { Language } from '../../models/language.model';
-import { CommonModule } from '@angular/common';
 import { FilterService } from '../../services/filter.service';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-search',
@@ -16,12 +16,11 @@ import { FilterService } from '../../services/filter.service';
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
   languageData: string[] = [];
   orderData: string[] = ['asc', 'desc'];
   selectedLanguage: string = 'JavaScript';
   selectedOrder: string = 'desc';
-  showError: boolean = false;
 
   constructor(
     private languageService: LanguageService,
@@ -44,11 +43,6 @@ export class SearchComponent {
   }
 
   onSearch() {
-    if (!this.languageData.includes(this.selectedLanguage)) {
-      this.showError = true;
-    } else {
-      this.showError = false;
-      this.filterService.setFilters(this.selectedLanguage, this.selectedOrder);
-    }
+    this.filterService.setFilters(this.selectedLanguage, this.selectedOrder);
   }
 }

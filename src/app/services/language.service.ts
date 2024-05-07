@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Language } from '../models/language.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ export class LanguageService {
 
   constructor(private http: HttpClient) {}
 
-  getLanguages(): Observable<any> {
-    return this.http.get<any>(this.languageAPI);
+  getLanguages(): Observable<Language[]> {
+    return this.http.get<Language[]>(this.languageAPI);
   }
 }

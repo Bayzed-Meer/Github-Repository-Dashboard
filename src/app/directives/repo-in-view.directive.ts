@@ -16,8 +16,7 @@ export class RepoInViewDirective implements OnInit, OnDestroy {
 
   private intersectionObserver: IntersectionObserver | undefined;
 
-  constructor(private elementRef: ElementRef) {}
-
+  constructor(private elementRef: ElementRef<HTMLElement>) {}
   ngOnInit(): void {
     this.initializeIntersectionObserver();
   }

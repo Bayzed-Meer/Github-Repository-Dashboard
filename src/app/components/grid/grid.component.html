@@ -1,5 +1,5 @@
-<div class="w-3/4 mx-auto">
-  <ejs-grid #grid [dataSource]="repos" (dataBound)="onGridDataBound()">
+<div class="w-3/4 mx-auto" #grid>
+  <ejs-grid [dataSource]="repos" (dataBound)="onGridDataBound()">
     <e-columns>
       <e-column field="rowIndex" headerText="Number"></e-column>
       <e-column field="name" headerText="Repository Name"></e-column>

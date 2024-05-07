@@ -1,4 +1,28 @@
-<div class="w-3/4 mx-auto mt-8">
+<div class="flex justify-center items-center gap-4 px-2">
+  <label for="sample-list" class="text-sm text-gray-500 mb-2">
+    <span class="font-bold text-pink-500">Select up to 3 languages</span>
+    to compare their repository counts in
+    <span class="font-bold text-pink-500">Pie Chart</span>:
+  </label>
+
+  <ejs-multiselect
+    id="sample-list"
+    class="w-full p-4"
+    [dataSource]="languageData"
+    [maximumSelectionLength]="maxSelection"
+    #multiselect
+  ></ejs-multiselect>
+
+  <button
+    type="button"
+    (click)="onSearch()"
+    class="text-white bg-pink-500 hover:bg-pink-700 font-medium rounded-md text-sm p-2"
+  >
+    Search
+  </button>
+</div>
+
+<div *ngIf="selectedLanguages.length > 0">
   <ejs-accumulationchart
     id="chart-container"
     [tooltip]="tooltip"

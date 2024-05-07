@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   CategoryService,
   ChartModule,
@@ -8,23 +8,17 @@ import {
 } from '@syncfusion/ej2-angular-charts';
 import { RepoService } from '../../../services/repo.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import {
   AutoCompleteModule,
   DropDownListModule,
 } from '@syncfusion/ej2-angular-dropdowns';
 import { LanguageService } from '../../../services/language.service';
+import { Language } from '../../../models/language.model';
 
 @Component({
   selector: 'app-bar-chart',
   standalone: true,
-  imports: [
-    ChartModule,
-    AutoCompleteModule,
-    FormsModule,
-    DropDownListModule,
-    CommonModule,
-  ],
+  imports: [ChartModule, AutoCompleteModule, DropDownListModule, CommonModule],
   providers: [
     CategoryService,
     ColumnSeriesService,
@@ -34,17 +28,18 @@ import { LanguageService } from '../../../services/language.service';
   templateUrl: './bar-chart.component.html',
   styleUrl: './bar-chart.component.scss',
 })
-export class BarChartComponent {
-  public primaryXAxis?: Object;
-  public primaryYAxis?: Object;
-  public chartData?: Object[];
-  public tooltip?: Object;
-  public title?: string;
-  public palette?: string[];
-
-  public data: string[] = [];
-
+export class BarChartComponent implements OnInit {
+  title: string = 'Top 10 Repositories Comparison of Stars and Forks';
+  Languagedata: string[] = [];
   selectedLanguage: string = 'Javascript';
+  palette: string[] = ['#ec4899', '#9333ea'];
+  chartData?: Object[];
+  tooltip: Object = { enable: true };
+  primaryXAxis: Object = {
+    valueType: 'Category',
+    title: 'Stars',
+  };
+  primaryYAxis?: Object;
 
   constructor(
     private repoService: RepoService,
@@ -58,7 +53,7 @@ export class BarChartComponent {
 
   fetchRepositories(): void {
     this.repoService
-      .fetchRepositories(this.selectedLanguage)
+      .fetchBarChartRepositories(this.selectedLanguage)
       .subscribe((newRepos: any) => {
         const top10Repos = newRepos.items.slice(0, 10);
 
@@ -89,24 +84,12 @@ export class BarChartComponent {
           })
         );
       });
-
-    this.primaryXAxis = {
-      valueType: 'Category',
-      title: 'Stars',
-    };
-
-    this.palette = ['#ec4899', '#9333ea'];
-
-    this.tooltip = { enable: true };
-
-    this.title =
-      'Top 10 Searched Language Repositories Comparison of Stars and Forks';
   }
 
   fetchLanguages() {
     this.languageService.getLanguages().subscribe({
       next: (data) => {
-        this.data = data.map((item: any) => item.name);
+        this.Languagedata = data.map((item: Language) => item.name);
       },
       error: (error) => {
         console.error('Error fetching languages:', error);

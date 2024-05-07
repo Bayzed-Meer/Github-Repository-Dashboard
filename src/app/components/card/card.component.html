@@ -1,4 +1,4 @@
-<div class="grid grid-cols-4 gap-6 w-3/4 mx-auto">
+<div class="grid grid-cols-4 gap-6 w-3/4 mx-auto" #card>
   <ng-container *ngFor="let repo of repos; let i = index">
     <div
       [id]="'repo-' + (i + 1)"
