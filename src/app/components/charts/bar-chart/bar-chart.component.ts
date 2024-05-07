@@ -55,11 +55,7 @@ export class BarChartComponent implements OnInit {
     this.repoService
       .fetchBarChartRepositories(this.selectedLanguage)
       .subscribe((newRepos: any) => {
-        const top10Repos = newRepos.items.slice(0, 10);
-
-        top10Repos.sort(
-          (a: any, b: any) => a.stargazers_count - b.stargazers_count
-        );
+        const top10Repos = newRepos;
 
         const maxStars = Math.max(
           ...top10Repos.map((repo: any) => repo.stargazers_count)
@@ -72,6 +68,7 @@ export class BarChartComponent implements OnInit {
 
         this.primaryYAxis = {
           minimum: 0,
+          title: 'Forks',
           maximum: maxYValue + 30000,
           interval: 20000,
         };

@@ -71,9 +71,11 @@ export class RepoService {
     params = params.append('sort', 'stars');
     params = params.append('order', 'desc');
     params = params.append('page', '1');
-    params = params.append('per_page', '50');
+    params = params.append('per_page', '10');
 
-    return this.http.get<any>(this.baseUrl, { params });
+    return this.http
+      .get<any>(this.baseUrl, { params })
+      .pipe(map((data) => data.items));
   }
 
   searchRepositories(language: string, order: string, page: number = 1): void {
