@@ -7,11 +7,11 @@ import { Language } from '../models/language.model';
   providedIn: 'root',
 })
 export class LanguageService {
-  private languageAPI: string = 'https://api.github.com/languages';
+  private languageURL: string = 'https://api.github.com/languages';
 
   constructor(private http: HttpClient) {}
 
-  getLanguages(): Observable<Language[]> {
-    return this.http.get<Language[]>(this.languageAPI);
+  fetchLanguages(): Observable<Language[]> {
+    return this.http.get<Language[]>(this.languageURL);
   }
 }

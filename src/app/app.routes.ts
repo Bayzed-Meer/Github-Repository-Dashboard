@@ -5,5 +5,11 @@ import { ChartsComponent } from './components/charts/charts.component';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'discover' },
   { path: 'discover', component: DisplayComponent },
-  { path: 'charts', component: ChartsComponent },
+  {
+    path: 'charts',
+    loadComponent: () =>
+      import('./components/charts/charts.component').then(
+        (m) => m.ChartsComponent
+      ),
+  },
 ];

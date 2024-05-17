@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   CategoryService,
   ChartModule,
@@ -6,14 +7,19 @@ import {
   LegendService,
   TooltipService,
 } from '@syncfusion/ej2-angular-charts';
-import { RepoService } from '../../../services/repo.service';
-import { CommonModule } from '@angular/common';
 import {
   AutoCompleteModule,
   DropDownListModule,
 } from '@syncfusion/ej2-angular-dropdowns';
 import { LanguageService } from '../../../services/language.service';
 import { Language } from '../../../models/language.model';
+import {
+  GithubRepositoryAPIResponse,
+  Repository,
+} from '../../../models/repository.model';
+import { RepositoryService } from '../../../services/repository.service';
+import { Observable, map } from 'rxjs';
+import { BarChartData } from '../../../models/bar-chart.model';
 
 @Component({
   selector: 'app-bar-chart',
@@ -27,74 +33,69 @@ import { Language } from '../../../models/language.model';
   ],
   templateUrl: './bar-chart.component.html',
   styleUrl: './bar-chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChartComponent implements OnInit {
-  title: string = 'Top 10 Repositories Comparison of Stars and Forks';
-  Languagedata: string[] = [];
-  selectedLanguage: string = 'Javascript';
-  palette: string[] = ['#ec4899', '#9333ea'];
-  chartData?: Object[];
-  tooltip: Object = { enable: true };
-  primaryXAxis: Object = {
-    valueType: 'Category',
-    title: 'Stars',
-  };
-  primaryYAxis?: Object;
+  protected languages$!: Observable<string[]>;
+  protected barChartData$!: Observable<BarChartData[]>;
+  protected selectedLanguage: string = '';
+  protected primaryYAxis!: Object;
 
   constructor(
-    private repoService: RepoService,
+    private repositoryService: RepositoryService,
     private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
-    this.fetchRepositories();
     this.fetchLanguages();
   }
 
-  fetchRepositories(): void {
-    this.repoService
-      .fetchBarChartRepositories(this.selectedLanguage)
-      .subscribe((newRepos: any) => {
-        const top10Repos = newRepos;
+  private fetchLanguages(): void {
+    this.languages$ = this.languageService
+      .fetchLanguages()
+      .pipe(
+        map((languages: Language[]) =>
+          languages.map((language) => language.name)
+        )
+      );
+  }
 
-        const maxStars = Math.max(
-          ...top10Repos.map((repo: any) => repo.stargazers_count)
-        );
-        const maxForks = Math.max(
-          ...top10Repos.map((repo: any) => repo.forks_count)
-        );
+  private fetchRepositories(
+    language: string,
+    sortOrder: string,
+    pageNumber: number,
+    pageSize: number
+  ): void {
+    this.barChartData$ = this.repositoryService
+      .fetchRepositories(language, sortOrder, pageNumber, pageSize)
+      .pipe(
+        map((response: GithubRepositoryAPIResponse) => {
+          const repositories: Repository[] = response.items;
 
-        const maxYValue = Math.max(maxStars, maxForks);
+          const maxStars: number = Math.max(
+            ...repositories.map((repo: Repository) => repo.stargazers_count)
+          );
+          const maxForks: number = Math.max(
+            ...repositories.map((repo: Repository) => repo.forks_count)
+          );
+          const maxYValue: number = Math.max(maxStars, maxForks);
 
-        this.primaryYAxis = {
-          minimum: 0,
-          title: 'Forks',
-          maximum: maxYValue + 30000,
-          interval: 20000,
-        };
-
-        this.chartData = top10Repos.map(
-          (repo: { name: any; stargazers_count: any; forks_count: any }) => ({
+          this.primaryYAxis = {
+            minimum: 0,
+            title: 'Forks',
+            maximum: Math.round(maxYValue * (1 + 0.2)),
+            interval: Math.round(maxYValue * 0.2),
+          };
+          return repositories.map((repo: Repository) => ({
             name: repo.name,
             stars: repo.stargazers_count,
             forks: repo.forks_count,
-          })
-        );
-      });
+          }));
+        })
+      );
   }
 
-  fetchLanguages() {
-    this.languageService.getLanguages().subscribe({
-      next: (data) => {
-        this.Languagedata = data.map((item: Language) => item.name);
-      },
-      error: (error) => {
-        console.error('Error fetching languages:', error);
-      },
-    });
-  }
-
-  onSearch(): void {
-    this.fetchRepositories();
+  protected searchTopTenRepositories(): void {
+    this.fetchRepositories(this.selectedLanguage, 'desc', 1, 10);
   }
 }

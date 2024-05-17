@@ -2,42 +2,50 @@
   <ejs-autocomplete
     id="atcelement"
     placeholder="Search Language..."
-    [dataSource]="Languagedata"
+    [dataSource]="languages$ | async"
     [(value)]="selectedLanguage"
     class="w-full p-4"
   ></ejs-autocomplete>
 
   <button
     type="button"
-    (click)="onSearch()"
+    (click)="searchTopTenRepositories()"
     class="text-white bg-pink-500 hover:bg-pink-700 font-medium rounded-md text-sm p-2"
   >
     Search
   </button>
 </div>
 
-<ejs-chart
-  id="container"
-  [primaryXAxis]="primaryXAxis"
-  [primaryYAxis]="primaryYAxis"
-  [title]="title"
-  [tooltip]="tooltip"
-  [palettes]="palette"
+<div
+  class="flex justify-center items-center gap-4 p-4"
+  *ngIf="barChartData$ | async as barChartData"
 >
-  <e-series-collection>
-    <e-series
-      [dataSource]="chartData"
-      type="Column"
-      xName="name"
-      yName="stars"
-      name="Stars"
-    ></e-series>
-    <e-series
-      [dataSource]="chartData"
-      type="Column"
-      xName="name"
-      yName="forks"
-      name="Forks"
-    ></e-series>
-  </e-series-collection>
-</ejs-chart>
+  <ejs-chart
+    id="container"
+    [primaryXAxis]="{
+      valueType: 'Category',
+      title: 'Stars',
+    }"
+    [primaryYAxis]="primaryYAxis"
+    title="Top 10 Repositories Comparison of Stars vs Forks"
+    [tooltip]="{ enable: true }"
+    [palettes]="['#ec4899', '#9333ea']"
+  >
+    <e-series-collection>
+      <e-series
+        [dataSource]="barChartData"
+        type="Column"
+        xName="name"
+        yName="stars"
+        name="Stars"
+      ></e-series>
+      <e-series
+        [dataSource]="barChartData"
+        type="Column"
+        xName="name"
+        yName="forks"
+        name="Forks"
+      ></e-series>
+    </e-series-collection>
+  </ejs-chart>
+</div>

@@ -1,5 +1,9 @@
-import { RepoService } from '../../../services/repo.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -20,6 +24,10 @@ import {
 } from '@syncfusion/ej2-angular-dropdowns';
 import { LanguageService } from '../../../services/language.service';
 import { Language } from '../../../models/language.model';
+import { RepositoryService } from '../../../services/repository.service';
+import { PieChartData } from '../../../models/pie-chart.model';
+import { GithubRepositoryAPIResponse } from '../../../models/repository.model';
+import { Observable, forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-pie-chart',
@@ -41,21 +49,17 @@ import { Language } from '../../../models/language.model';
   ],
   templateUrl: './pie-chart.component.html',
   styleUrl: './pie-chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PieChartComponent implements OnInit {
   @ViewChild('multiselect') multiselect!: MultiSelectComponent;
 
-  languageData: string[] = [];
-  selectedLanguages: string[] = [];
-  title: string = 'Searched languages repository counts';
-  pieData: Object[] = [];
-  maxSelection = 3;
-  tooltip = {
-    enable: true,
-  };
+  protected languages$!: Observable<string[]>;
+  protected pieChartData$!: Observable<PieChartData[]>;
+  protected selectionLimit: number = 3;
 
   constructor(
-    private repoService: RepoService,
+    private repositoryService: RepositoryService,
     private languageService: LanguageService
   ) {}
 
@@ -63,37 +67,47 @@ export class PieChartComponent implements OnInit {
     this.fetchLanguages();
   }
 
-  fetchLanguages() {
-    this.languageService.getLanguages().subscribe({
-      next: (data) => {
-        this.languageData = data.map((item: Language) => item.name);
-      },
-      error: (error) => {
-        console.error('Error fetching languages:', error);
-      },
-    });
+  private fetchLanguages(): void {
+    this.languages$ = this.languageService
+      .fetchLanguages()
+      .pipe(
+        map((languages: Language[]) =>
+          languages.map((language) => language.name)
+        )
+      );
   }
 
-  fetchRepoCounts(languages: string[]): void {
-    this.repoService.getRepoCounts(languages).subscribe({
-      next: (response: any[]) => {
-        this.pieData = response.map((repo) => ({
-          x: repo.language,
-          y: repo.count,
+  private fetchRepositoryCounts(
+    languages: string[],
+    sortOrder: string,
+    pageNumber: number,
+    pageSize: number
+  ): void {
+    const languageCount$: Observable<PieChartData>[] = languages.map(
+      (language: string) =>
+        this.repositoryService
+          .fetchRepositories(language, sortOrder, pageNumber, pageSize)
+          .pipe(
+            map((response: GithubRepositoryAPIResponse) => ({
+              language,
+              count: response.total_count,
+            }))
+          )
+    );
+
+    this.pieChartData$ = forkJoin(languageCount$).pipe(
+      map((results: PieChartData[]) => {
+        return results.map(({ language, count }) => ({
+          language,
+          count,
         }));
-      },
-      error: (error: any) => {
-        console.error('Error fetching repository counts', error);
-      },
-    });
+      })
+    );
   }
 
-  onSearch() {
-    const selectedItems = this.multiselect.value as string[];
-
-    if (selectedItems && selectedItems.length === 3) {
-      this.selectedLanguages = selectedItems;
-      this.fetchRepoCounts(selectedItems);
-    }
+  protected searchRepositoryCounts(): void {
+    const selectedLanguages = this.multiselect.value as string[];
+    if (selectedLanguages)
+      this.fetchRepositoryCounts(selectedLanguages, 'desc', 1, 1);
   }
 }

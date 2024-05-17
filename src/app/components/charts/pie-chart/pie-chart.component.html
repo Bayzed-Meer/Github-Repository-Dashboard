@@ -7,32 +7,33 @@
 
   <ejs-multiselect
     id="sample-list"
-    class="w-full p-4"
-    [dataSource]="languageData"
-    [maximumSelectionLength]="maxSelection"
+    class="w-full"
+    placeholder="Search languages..."
+    [dataSource]="languages$ | async"
+    [maximumSelectionLength]="selectionLimit"
     #multiselect
   ></ejs-multiselect>
 
   <button
     type="button"
-    (click)="onSearch()"
+    (click)="searchRepositoryCounts()"
     class="text-white bg-pink-500 hover:bg-pink-700 font-medium rounded-md text-sm p-2"
   >
     Search
   </button>
 </div>
 
-<div *ngIf="selectedLanguages.length > 0">
+<div *ngIf="pieChartData$ | async as pieChartData">
   <ejs-accumulationchart
     id="chart-container"
-    [tooltip]="tooltip"
-    [title]="title"
+    [tooltip]="{ enable: true }"
+    title="Comparison of Repository Counts for Selected Languages"
   >
     <e-accumulation-series-collection>
       <e-accumulation-series
-        [dataSource]="pieData"
-        xName="x"
-        yName="y"
+        [dataSource]="pieChartData"
+        xName="language"
+        yName="count"
       ></e-accumulation-series>
     </e-accumulation-series-collection>
   </ejs-accumulationchart>

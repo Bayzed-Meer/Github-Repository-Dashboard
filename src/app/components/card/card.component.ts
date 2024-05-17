@@ -1,15 +1,16 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
-import { RepoService } from '../../services/repo.service';
 import { RepoInViewDirective } from '../../directives/repo-in-view.directive';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+import { Observable } from 'rxjs';
+import { Repository } from '../../models/repository.model';
 
 @Component({
   selector: 'app-card',
@@ -17,39 +18,9 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
   imports: [CommonModule, RepoInViewDirective, LoadingSpinnerComponent],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardComponent implements OnInit, OnDestroy {
-  @ViewChild('card') card: ElementRef | undefined;
-
-  repos: any[] = [];
-  private repoSubscription: Subscription | undefined;
-
-  constructor(private repoService: RepoService) {}
-
-  ngOnInit(): void {
-    this.fetchRepositories();
-  }
-
-  fetchRepositories(): void {
-    this.repoSubscription = this.repoService
-      .getRepositories()
-      .subscribe((newRepos) => {
-        if (this.repoService.searchSource === 'filter') this.scrollToTop();
-        this.repos = newRepos;
-      });
-  }
-
-  ngOnDestroy(): void {
-    if (this.repoSubscription) {
-      this.repoSubscription.unsubscribe();
-    }
-  }
-
-  loadRepos() {
-    this.repoService.fetchNextPage();
-  }
-
-  scrollToTop(): void {
-    document.getElementById('card')!.scrollIntoView();
-  }
+export class CardComponent {
+  @Input() repositories$!: Observable<Repository[]>;
+  @Output() loadMoreRepositoriesEvent = new EventEmitter<void>();
 }

@@ -1,4 +1,4 @@
-export interface RepoCount {
+export interface PieChartData {
   language: string;
   count: number;
 }

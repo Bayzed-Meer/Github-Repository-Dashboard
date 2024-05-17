@@ -13,8 +13,17 @@
     </button>
   </div>
 
-  <div class="overflow-y-auto h-[75vh]">
-    <app-card *ngIf="showCard"></app-card>
-    <app-grid *ngIf="!showCard"></app-grid>
+  <div #dataContainer class="overflow-y-auto h-[73vh]">
+    <app-card
+      *ngIf="showCard"
+      [repositories$]="repositories$"
+      (loadMoreRepositoriesEvent)="loadMoreRepositories()"
+    >
+    </app-card>
+    <app-grid
+      *ngIf="!showCard"
+      [repositories$]="repositories$"
+      (loadMoreRepositoriesEvent)="loadMoreRepositories()"
+    ></app-grid>
   </div>
 </div>

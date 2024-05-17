@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { PieChartComponent } from './pie-chart/pie-chart.component';
-
 
 @Component({
   selector: 'app-charts',
@@ -9,5 +8,6 @@ import { PieChartComponent } from './pie-chart/pie-chart.component';
   imports: [BarChartComponent, PieChartComponent],
   templateUrl: './charts.component.html',
   styleUrl: './charts.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartsComponent {}

@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RepoService } from '../../services/repo.service';
 import { GridModule } from '@syncfusion/ej2-angular-grids';
 import { RepoInViewDirective } from '../../directives/repo-in-view.directive';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+import { Observable } from 'rxjs';
+import { Repository } from '../../models/repository.model';
 
 @Component({
   selector: 'app-grid',
@@ -17,53 +23,19 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
   ],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent {
-  repos: any[] = [];
-  repoSubscription: Subscription | undefined;
-  intersectionObserver: IntersectionObserver | undefined;
-  gridInitialized = false;
+  @Input() repositories$!: Observable<Repository[]>;
+  @Output() loadMoreRepositoriesEvent = new EventEmitter<void>();
 
-  constructor(private repoService: RepoService) {}
+  protected gridInitialized = false;
 
-  ngOnInit(): void {
-    this.fetchRepositories();
-  }
-
-  onGridDataBound(): void {
+  protected onGridDataBound(): void {
     this.gridInitialized = true;
   }
 
-  fetchRepositories(): void {
-    this.repoSubscription = this.repoService
-      .getRepositories()
-      .subscribe((newRepos) => {
-        if (this.repoService.searchSource === 'filter') this.scrollToTop();
-        newRepos.forEach((repo, index) => {
-          repo.rowIndex = index + 1;
-        });
-        this.repos = newRepos;
-      });
-  }
-
-  scrollToTop(): void {
-    document.getElementById('grid')!.scrollIntoView();
-  }
-
-  ngOnDestroy(): void {
-    if (this.repoSubscription) {
-      this.repoSubscription.unsubscribe();
-    }
-    if (this.intersectionObserver) {
-      this.intersectionObserver.disconnect();
-    }
-  }
-
-  loadRepos() {
-    this.repoService.fetchNextPage();
-  }
-
-  onClick(url: string): void {
+  protected openRepository(url: string): void {
     window.open(url);
   }
 }
