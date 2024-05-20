@@ -36,10 +36,10 @@ import { BarChartData } from '../../../models/bar-chart.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChartComponent implements OnInit {
-  protected languages$!: Observable<string[]>;
-  protected barChartData$!: Observable<BarChartData[]>;
-  protected selectedLanguage: string = '';
-  protected primaryYAxis!: Object;
+   languages$!: Observable<string[]>;
+   barChartData$!: Observable<BarChartData[]>;
+   selectedLanguage: string = '';
+   primaryYAxis!: Object;
 
   constructor(
     private repositoryService: RepositoryService,
@@ -50,7 +50,7 @@ export class BarChartComponent implements OnInit {
     this.fetchLanguages();
   }
 
-  private fetchLanguages(): void {
+   fetchLanguages(): void {
     this.languages$ = this.languageService
       .fetchLanguages()
       .pipe(
@@ -95,7 +95,7 @@ export class BarChartComponent implements OnInit {
       );
   }
 
-  protected searchTopTenRepositories(): void {
+   searchTopTenRepositories(): void {
     this.fetchRepositories(this.selectedLanguage, 'desc', 1, 10);
   }
 }

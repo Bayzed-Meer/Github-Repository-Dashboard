@@ -35,7 +35,7 @@ export class SearchComponent implements OnInit {
     this.fetchLanguages();
   }
 
-  private fetchLanguages(): void {
+   fetchLanguages(): void {
     this.languages$ = this.languageService
       .fetchLanguages()
       .pipe(
@@ -45,7 +45,7 @@ export class SearchComponent implements OnInit {
       );
   }
 
-  protected searchRepositories(language: string, sortOrder: string): void {
+   searchRepositories(language: string, sortOrder: string): void {
     this.sharedRepositoryService.setPageNumber(1);
     this.filterService.setFilters({ language, sortOrder });
   }

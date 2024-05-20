@@ -6,8 +6,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../search/search.component';
-import { CardComponent } from '../card/card.component';
-import { GridComponent } from '../grid/grid.component';
 import { FilterService } from '../../services/filter.service';
 import {
   Observable,
@@ -21,6 +19,8 @@ import {
 import { Repository } from '../../models/repository.model';
 import { RepositoryService } from '../../services/repository.service';
 import { SharedRepositoryService } from '../../services/shared-repository.service';
+import { CardComponent } from './card/card.component';
+import { GridComponent } from './grid/grid.component';
 
 @Component({
   selector: 'app-display',
@@ -33,9 +33,9 @@ import { SharedRepositoryService } from '../../services/shared-repository.servic
 export class DisplayComponent {
   @ViewChild('dataContainer') dataContainer!: ElementRef<HTMLDivElement>;
 
-  protected showCard: boolean = true;
-  protected repositories$!: Observable<Repository[]>;
-  protected pageSize: number = 50;
+  showCard: boolean = true;
+  repositories$!: Observable<Repository[]>;
+  pageSize: number = 50;
 
   private fetchSubscription!: Subscription;
   private repositoriesSubscription!: Subscription;
@@ -50,6 +50,7 @@ export class DisplayComponent {
     this.repositories$ = this.sharedRepositoryService.getRepositories();
     this.repositoriesSubscription = this.repositories$
       .pipe(
+        take(1),
         tap((repositories) => {
           if (repositories.length === 0) this.fetchRepositories();
         })
@@ -57,7 +58,7 @@ export class DisplayComponent {
       .subscribe();
   }
 
-  protected fetchRepositories(): void {
+   fetchRepositories(): void {
     this.fetchSubscription = combineLatest([
       this.sharedRepositoryService.getPageNumber(),
       this.filterService.getFilters(),
@@ -75,7 +76,6 @@ export class DisplayComponent {
               tap((repos) => {
                 if (pageNumber === 1) {
                   this.sharedRepositoryService.setRepositories(repos.items);
-
                   if (this.dataContainer)
                     this.dataContainer.nativeElement.scrollTop = 0;
                 } else {
@@ -102,7 +102,7 @@ export class DisplayComponent {
       .subscribe();
   }
 
-  protected loadMoreRepositories(): void {
+   loadMoreRepositories(): void {
     this.sharedRepositoryService
       .getPageNumber()
       .pipe(
@@ -114,7 +114,7 @@ export class DisplayComponent {
       .subscribe();
   }
 
-  protected toggleView(): void {
+   toggleView(): void {
     this.showCard = !this.showCard;
   }
 

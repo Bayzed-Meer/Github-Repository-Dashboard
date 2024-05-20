@@ -55,7 +55,7 @@ export class PieChartComponent implements OnInit {
   @ViewChild('multiselect') multiselect!: MultiSelectComponent;
 
   protected languages$!: Observable<string[]>;
-  protected pieChartData$!: Observable<PieChartData[]>;
+  pieChartData$!: Observable<PieChartData[]>;
   protected selectionLimit: number = 3;
 
   constructor(
@@ -67,7 +67,7 @@ export class PieChartComponent implements OnInit {
     this.fetchLanguages();
   }
 
-  private fetchLanguages(): void {
+   fetchLanguages(): void {
     this.languages$ = this.languageService
       .fetchLanguages()
       .pipe(
@@ -105,7 +105,7 @@ export class PieChartComponent implements OnInit {
     );
   }
 
-  protected searchRepositoryCounts(): void {
+  searchRepositoryCounts(): void {
     const selectedLanguages = this.multiselect.value as string[];
     if (selectedLanguages)
       this.fetchRepositoryCounts(selectedLanguages, 'desc', 1, 1);
