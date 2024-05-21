@@ -9,18 +9,23 @@ import { of } from 'rxjs';
 describe('PieChartComponent', () => {
   let component: PieChartComponent;
   let fixture: ComponentFixture<PieChartComponent>;
+
   let languageService: LanguageService;
   let repositoryService: RepositoryService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PieChartComponent, HttpClientTestingModule],
+      imports: [HttpClientTestingModule, PieChartComponent], 
     }).compileComponents();
 
     fixture = TestBed.createComponent(PieChartComponent);
     component = fixture.componentInstance;
+
     languageService = TestBed.inject(LanguageService);
-    repositoryService = TestBed.inject(RepositoryService)
+    repositoryService = TestBed.inject(RepositoryService);
+    
+    const { getComputedStyle } = window;
+window.getComputedStyle = (elt) => getComputedStyle(elt);
     fixture.detectChanges();
   });
 
@@ -29,17 +34,17 @@ describe('PieChartComponent', () => {
   });
 
   it('should fetch languages on ngOnInit', () => {
-    spyOn(component, 'fetchLanguages');
+    const fetchLanguagesSpy = jest.spyOn(component, 'fetchLanguages');
     component.ngOnInit();
-    expect(component.fetchLanguages).toHaveBeenCalled();
+    expect(fetchLanguagesSpy).toHaveBeenCalled();
   });
 
   it('should fetch repository counts on searchRepositoryCounts', fakeAsync(() => {
     const languages = ['TypeScript', 'JavaScript'];
-    const fetchRepositoriesSpy = spyOn(repositoryService, 'fetchRepositories').and.returnValue(of({ total_count: 100, items: []}));
+    const fetchRepositoriesSpy = jest.spyOn(repositoryService, 'fetchRepositories').mockReturnValue(of({ total_count: 100, items: [] }));
     component.multiselect = { value: languages } as MultiSelectComponent;
     component.searchRepositoryCounts();
-    tick(); 
+    tick();
     expect(fetchRepositoriesSpy).toHaveBeenCalledTimes(languages.length);
     expect(component.pieChartData$).toBeDefined();
   }));

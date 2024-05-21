@@ -9,20 +9,26 @@ import { SharedRepositoryService } from '../../services/shared-repository.servic
 describe('DisplayComponent', () => {
   let component: DisplayComponent;
   let fixture: ComponentFixture<DisplayComponent>;
+  
   let repositoryService: RepositoryService;
   let filterService: FilterService;
   let sharedRepositoryService: SharedRepositoryService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DisplayComponent, HttpClientTestingModule],
+      imports: [HttpClientTestingModule, DisplayComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DisplayComponent);
     component = fixture.componentInstance;
+
     repositoryService = TestBed.inject(RepositoryService);
     filterService = TestBed.inject(FilterService);
     sharedRepositoryService = TestBed.inject(SharedRepositoryService);
+
+    const { getComputedStyle } = window;
+window.getComputedStyle = (elt) => getComputedStyle(elt);
+
     fixture.detectChanges();
   });
 
@@ -31,21 +37,21 @@ describe('DisplayComponent', () => {
   });
 
   it('should fetch repositories on initialization if no repositories exist', () => {
-    spyOn(component as any, 'fetchRepositories');
-    spyOn(sharedRepositoryService, 'getRepositories').and.returnValue(of([]));
+    jest.spyOn(component as any, 'fetchRepositories');
+    jest.spyOn(sharedRepositoryService, 'getRepositories').mockReturnValue(of([]));
     component.ngOnInit();
-    expect(component.fetchRepositories).toHaveBeenCalled();
+    expect((component as any).fetchRepositories).toHaveBeenCalled();
   });
 
   it('should fetch repositories when calling fetchRepositories', () => {
-    spyOn(repositoryService, 'fetchRepositories').and.returnValue(of({total_count: 100, items: [] }));
+    jest.spyOn(repositoryService, 'fetchRepositories').mockReturnValue(of({total_count: 100, items: [] }));
     component.fetchRepositories();
     expect(repositoryService.fetchRepositories).toHaveBeenCalled();
   });
 
   it('should load more repositories when calling loadMoreRepositories', () => {
-    spyOn(sharedRepositoryService, 'getPageNumber').and.returnValue(of(1));
-    spyOn(sharedRepositoryService, 'setPageNumber');
+    jest.spyOn(sharedRepositoryService, 'getPageNumber').mockReturnValue(of(1));
+    jest.spyOn(sharedRepositoryService, 'setPageNumber');
     component.loadMoreRepositories();
     expect(sharedRepositoryService.setPageNumber).toHaveBeenCalledWith(2);
   });

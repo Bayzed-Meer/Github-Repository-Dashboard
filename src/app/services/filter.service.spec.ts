@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-
 import { FilterService } from './filter.service';
 import { Filters } from '../models/filters.model';
-import { take } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 describe('FilterService', () => {
   let service: FilterService;
@@ -16,12 +15,14 @@ describe('FilterService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should set and filters', ()=> {
+  it('should set and get filters', () => {
     const mockFilters: Filters = {
       language: 'Typescript',
       sortOrder: 'asc',
-    }
+    };
     service.setFilters(mockFilters);
-    service.getFilters().pipe(take(1)).subscribe(filters => expect(filters).toEqual(mockFilters))
-  })
+    service.getFilters().pipe(take(1)).subscribe(filters => {
+      expect(filters).toEqual(mockFilters);
+    });
+  });
 });

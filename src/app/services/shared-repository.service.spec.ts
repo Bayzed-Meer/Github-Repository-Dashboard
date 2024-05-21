@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { SharedRepositoryService } from './shared-repository.service';
 import { Repository } from '../models/repository.model';
 
@@ -28,7 +27,6 @@ describe('SharedRepositoryService', () => {
   it('should set and get repositories', () => {
     const mockRepositories: Repository[] = [
       { name: 'Repo 1', description: 'Description 1', language: 'JavaScript', stargazers_count: 100, forks_count: 50, updated_at: '2024-05-20', owner: { login: 'user1' }, html_url: 'https://github.com/repo1' },
-      
       { name: 'Repo 2', description: 'Description 2', language: 'TypeScript', stargazers_count: 200, forks_count: 80, updated_at: '2024-05-19', owner: { login: 'user2' }, html_url: 'https://github.com/repo2' }
     ];
 
