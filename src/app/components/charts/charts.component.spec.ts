@@ -14,6 +14,8 @@ describe('ChartsComponent', () => {
 
     fixture = TestBed.createComponent(ChartsComponent);
     component = fixture.componentInstance;
+    const { getComputedStyle } = window;
+    window.getComputedStyle = (elt) => getComputedStyle(elt);
     fixture.detectChanges();
   });
 

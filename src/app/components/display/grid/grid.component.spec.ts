@@ -26,25 +26,20 @@ describe('GridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GridComponent]
+      imports: [GridComponent], 
     })
     .compileComponents();
     
     fixture = TestBed.createComponent(GridComponent);
     component = fixture.componentInstance;
+    const { getComputedStyle } = window;
+window.getComputedStyle = (elt) => getComputedStyle(elt);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  // it('should render repository names correctly', () => {
-  //   component.repositories$ = mockRepositories$;
-  //   fixture.detectChanges();
-  //   const compiled = fixture.nativeElement;
-  //   expect(compiled.querySelector('.repo-name').textContent).toContain('Repo 1');
-  // });
 
   it('should have input property repositories', () => {
     component.repositories$ = mockRepositories$;

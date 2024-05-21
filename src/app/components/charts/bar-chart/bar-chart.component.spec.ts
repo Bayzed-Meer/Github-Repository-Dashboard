@@ -4,14 +4,16 @@ import { LanguageService } from '../../../services/language.service';
 import { RepositoryService } from '../../../services/repository.service';
 import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { GithubRepositoryAPIResponse } from '../../../models/repository.model';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
   let fixture: ComponentFixture<BarChartComponent>;
+
   let languageService: LanguageService;
   let repositoryService: RepositoryService;
 
-  const mockApiResponse = {
+  const mockApiResponse: GithubRepositoryAPIResponse = {
     total_count: 100,
     items: [
       {
@@ -28,16 +30,20 @@ describe('BarChartComponent', () => {
       }
     ],
   };
-  
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BarChartComponent, HttpClientTestingModule],
+      imports: [HttpClientTestingModule, BarChartComponent], 
     }).compileComponents();
 
     fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;
+
     languageService = TestBed.inject(LanguageService);
     repositoryService = TestBed.inject(RepositoryService);
+    
+    const { getComputedStyle } = window;
+window.getComputedStyle = (elt) => getComputedStyle(elt);
     fixture.detectChanges();
   });
 
@@ -46,14 +52,14 @@ describe('BarChartComponent', () => {
   });
 
   it('should fetch languages on ngOnInit', () => {
-    spyOn(component, 'fetchLanguages');
+    const fetchLanguagesSpy = jest.spyOn(component, 'fetchLanguages');
     component.ngOnInit();
-    expect(component.fetchLanguages).toHaveBeenCalled();
+    expect(fetchLanguagesSpy).toHaveBeenCalled();
   });
 
   it('should fetch repositories and set barChartData$ on searchTopTenRepositories', fakeAsync(() => {
     const language = 'TypeScript';
-    const fetchRepositoriesSpy = spyOn(repositoryService, 'fetchRepositories').and.returnValue(of(mockApiResponse));
+    const fetchRepositoriesSpy = jest.spyOn(repositoryService, 'fetchRepositories').mockReturnValue(of(mockApiResponse));
     component.selectedLanguage = language;
     component.searchTopTenRepositories();
     tick();

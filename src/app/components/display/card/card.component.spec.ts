@@ -29,6 +29,14 @@ describe('CardComponent', () => {
       imports: [CardComponent],
     }).compileComponents();
 
+  const mockIntersectionObserver = jest.fn();
+  mockIntersectionObserver.mockReturnValue({
+    observe: () => null,
+    unobserve: () => null,
+    disconnect: () => null
+  });
+  window.IntersectionObserver = mockIntersectionObserver;
+
     fixture = TestBed.createComponent(CardComponent);
     component = fixture.componentInstance;
   });
