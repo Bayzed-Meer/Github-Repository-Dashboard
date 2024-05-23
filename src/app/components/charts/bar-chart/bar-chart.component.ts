@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   CategoryService,
@@ -18,8 +23,9 @@ import {
   Repository,
 } from '../../../models/repository.model';
 import { RepositoryService } from '../../../services/repository.service';
-import { Observable, map } from 'rxjs';
+import { Observable, interval, map } from 'rxjs';
 import { BarChartData } from '../../../models/bar-chart.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-bar-chart',
@@ -36,28 +42,26 @@ import { BarChartData } from '../../../models/bar-chart.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChartComponent implements OnInit {
-   languages$!: Observable<string[]>;
-   barChartData$!: Observable<BarChartData[]>;
-   selectedLanguage: string = '';
-   primaryYAxis!: Object;
+  languages$!: Observable<string[]>;
+  barChartData$!: Observable<BarChartData[]>;
+  selectedLanguage: string = '';
+  primaryYAxis!: Object;
 
   constructor(
     private repositoryService: RepositoryService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
     this.fetchLanguages();
   }
 
-   fetchLanguages(): void {
-    this.languages$ = this.languageService
-      .fetchLanguages()
-      .pipe(
-        map((languages: Language[]) =>
-          languages.map((language) => language.name)
-        )
-      );
+  fetchLanguages(): void {
+    this.languages$ = this.languageService.fetchLanguages().pipe(
+      takeUntilDestroyed(this.destroyRef),
+      map((languages: Language[]) => languages.map((language) => language.name))
+    );
   }
 
   private fetchRepositories(
@@ -69,6 +73,7 @@ export class BarChartComponent implements OnInit {
     this.barChartData$ = this.repositoryService
       .fetchRepositories(language, sortOrder, pageNumber, pageSize)
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         map((response: GithubRepositoryAPIResponse) => {
           const repositories: Repository[] = response.items;
 
@@ -95,7 +100,7 @@ export class BarChartComponent implements OnInit {
       );
   }
 
-   searchTopTenRepositories(): void {
+  searchTopTenRepositories(): void {
     this.fetchRepositories(this.selectedLanguage, 'desc', 1, 10);
   }
 }

@@ -1,26 +1,20 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../search/search.component';
 import { FilterService } from '../../services/filter.service';
-import {
-  Observable,
-  Subscription,
-  combineLatest,
-  map,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs';
+import { Observable, combineLatest, map, switchMap, take, tap } from 'rxjs';
 import { Repository } from '../../models/repository.model';
 import { RepositoryService } from '../../services/repository.service';
 import { SharedRepositoryService } from '../../services/shared-repository.service';
 import { CardComponent } from './card/card.component';
 import { GridComponent } from './grid/grid.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-display',
@@ -37,19 +31,18 @@ export class DisplayComponent {
   repositories$!: Observable<Repository[]>;
   pageSize: number = 50;
 
-  private fetchSubscription!: Subscription;
-  private repositoriesSubscription!: Subscription;
-
   constructor(
     private repositoryService: RepositoryService,
     private filterService: FilterService,
-    private sharedRepositoryService: SharedRepositoryService
+    private sharedRepositoryService: SharedRepositoryService,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
     this.repositories$ = this.sharedRepositoryService.getRepositories();
-    this.repositoriesSubscription = this.repositories$
+    this.repositories$
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         take(1),
         tap((repositories) => {
           if (repositories.length === 0) this.fetchRepositories();
@@ -58,12 +51,13 @@ export class DisplayComponent {
       .subscribe();
   }
 
-   fetchRepositories(): void {
-    this.fetchSubscription = combineLatest([
+  fetchRepositories(): void {
+    combineLatest([
       this.sharedRepositoryService.getPageNumber(),
       this.filterService.getFilters(),
     ])
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         switchMap(([pageNumber, filters]) =>
           this.repositoryService
             .fetchRepositories(
@@ -73,6 +67,7 @@ export class DisplayComponent {
               this.pageSize
             )
             .pipe(
+              takeUntilDestroyed(this.destroyRef),
               tap((repos) => {
                 if (pageNumber === 1) {
                   this.sharedRepositoryService.setRepositories(repos.items);
@@ -82,6 +77,7 @@ export class DisplayComponent {
                   this.sharedRepositoryService
                     .getRepositories()
                     .pipe(
+                      takeUntilDestroyed(this.destroyRef),
                       take(1),
                       map((existingRepos) => [
                         ...existingRepos,
@@ -102,10 +98,11 @@ export class DisplayComponent {
       .subscribe();
   }
 
-   loadMoreRepositories(): void {
+  loadMoreRepositories(): void {
     this.sharedRepositoryService
       .getPageNumber()
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         take(1),
         tap((pageNumber) =>
           this.sharedRepositoryService.setPageNumber(pageNumber + 1)
@@ -114,12 +111,7 @@ export class DisplayComponent {
       .subscribe();
   }
 
-   toggleView(): void {
+  toggleView(): void {
     this.showCard = !this.showCard;
-  }
-
-  ngOnDestroy(): void {
-    this.fetchSubscription?.unsubscribe();
-    this.repositoriesSubscription?.unsubscribe();
   }
 }

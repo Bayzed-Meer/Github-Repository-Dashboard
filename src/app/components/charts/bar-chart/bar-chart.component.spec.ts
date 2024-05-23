@@ -43,7 +43,7 @@ describe('BarChartComponent', () => {
     repositoryService = TestBed.inject(RepositoryService);
     
     const { getComputedStyle } = window;
-window.getComputedStyle = (elt) => getComputedStyle(elt);
+    window.getComputedStyle = (elt) => getComputedStyle(elt);
     fixture.detectChanges();
   });
 

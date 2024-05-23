@@ -26,7 +26,7 @@ describe('SearchComponent', () => {
     sharedRepositoryService = TestBed.inject(SharedRepositoryService);
 
     const { getComputedStyle } = window;
-window.getComputedStyle = (elt) => getComputedStyle(elt);
+    window.getComputedStyle = (elt) => getComputedStyle(elt);
     fixture.detectChanges();
   });
 

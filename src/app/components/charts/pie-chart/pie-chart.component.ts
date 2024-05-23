@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -28,6 +29,7 @@ import { RepositoryService } from '../../../services/repository.service';
 import { PieChartData } from '../../../models/pie-chart.model';
 import { GithubRepositoryAPIResponse } from '../../../models/repository.model';
 import { Observable, forkJoin, map } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-pie-chart',
@@ -60,21 +62,19 @@ export class PieChartComponent implements OnInit {
 
   constructor(
     private repositoryService: RepositoryService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
     this.fetchLanguages();
   }
 
-   fetchLanguages(): void {
-    this.languages$ = this.languageService
-      .fetchLanguages()
-      .pipe(
-        map((languages: Language[]) =>
-          languages.map((language) => language.name)
-        )
-      );
+  fetchLanguages(): void {
+    this.languages$ = this.languageService.fetchLanguages().pipe(
+      takeUntilDestroyed(this.destroyRef),
+      map((languages: Language[]) => languages.map((language) => language.name))
+    );
   }
 
   private fetchRepositoryCounts(
@@ -88,6 +88,7 @@ export class PieChartComponent implements OnInit {
         this.repositoryService
           .fetchRepositories(language, sortOrder, pageNumber, pageSize)
           .pipe(
+            takeUntilDestroyed(this.destroyRef),
             map((response: GithubRepositoryAPIResponse) => ({
               language,
               count: response.total_count,
