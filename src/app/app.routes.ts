@@ -12,4 +12,18 @@ export const routes: Routes = [
         (m) => m.ChartsComponent
       ),
   },
+  {
+    path: 'charts/barchart',
+    loadComponent: () =>
+      import('./components/charts/bar-chart/bar-chart.component').then(
+        (m) => m.BarChartComponent
+      ),
+  },
+  {
+    path: 'charts/piechart',
+    loadComponent: () =>
+      import('./components/charts/pie-chart/pie-chart.component').then(
+        (m) => m.PieChartComponent
+      ),
+  },
 ];

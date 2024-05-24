@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   ElementRef,
@@ -8,13 +9,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../search/search.component';
 import { FilterService } from '../../services/filter.service';
-import { Observable, combineLatest, map, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, map, switchMap, tap } from 'rxjs';
 import { Repository } from '../../models/repository.model';
 import { RepositoryService } from '../../services/repository.service';
-import { SharedRepositoryService } from '../../services/shared-repository.service';
 import { CardComponent } from './card/card.component';
 import { GridComponent } from './grid/grid.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Filters } from '../../models/filters.model';
 
 @Component({
   selector: 'app-display',
@@ -27,88 +28,72 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class DisplayComponent {
   @ViewChild('dataContainer') dataContainer!: ElementRef<HTMLDivElement>;
 
+  repositories: Repository[] = [];
   showCard: boolean = true;
-  repositories$!: Observable<Repository[]>;
+  fetchRepositories$ = new BehaviorSubject<void>(undefined);
   pageSize: number = 50;
+  pageNumber: number = 1;
+  currentFilters: Filters = {
+    language: '',
+    sortOrder: '',
+  };
 
   constructor(
     private repositoryService: RepositoryService,
     private filterService: FilterService,
-    private sharedRepositoryService: SharedRepositoryService,
-    private destroyRef: DestroyRef
+    private destroyRef: DestroyRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.repositories$ = this.sharedRepositoryService.getRepositories();
-    this.repositories$
+    this.fetchRepositories$
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        take(1),
-        tap((repositories) => {
-          if (repositories.length === 0) this.fetchRepositories();
-        })
-      )
-      .subscribe();
-  }
-
-  fetchRepositories(): void {
-    combineLatest([
-      this.sharedRepositoryService.getPageNumber(),
-      this.filterService.getFilters(),
-    ])
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        switchMap(([pageNumber, filters]) =>
-          this.repositoryService
-            .fetchRepositories(
-              filters.language,
-              filters.sortOrder,
-              pageNumber,
-              this.pageSize
-            )
-            .pipe(
-              takeUntilDestroyed(this.destroyRef),
-              tap((repos) => {
-                if (pageNumber === 1) {
-                  this.sharedRepositoryService.setRepositories(repos.items);
-                  if (this.dataContainer)
-                    this.dataContainer.nativeElement.scrollTop = 0;
-                } else {
-                  this.sharedRepositoryService
-                    .getRepositories()
-                    .pipe(
-                      takeUntilDestroyed(this.destroyRef),
-                      take(1),
-                      map((existingRepos) => [
-                        ...existingRepos,
-                        ...repos.items,
-                      ]),
-                      tap((updatedRepos) =>
-                        this.sharedRepositoryService.setRepositories(
-                          updatedRepos
-                        )
-                      )
-                    )
-                    .subscribe();
-                }
-              })
-            )
-        )
+        switchMap(() => this.filterService.getFilters()),
+        tap((filters: Filters) => {
+          if (
+            filters.language !== this.currentFilters.language ||
+            filters.sortOrder !== this.currentFilters.sortOrder
+          ) {
+            this.currentFilters.language = filters.language;
+            this.currentFilters.sortOrder = filters.sortOrder;
+            this.pageNumber = 1;
+            this.dataContainer
+              ? this.dataContainer.nativeElement.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                })
+              : undefined;
+          } else this.pageNumber = this.pageNumber + 1;
+        }),
+        switchMap((filters: Filters) =>
+          this.repositoryService.fetchRepositories(
+            filters.language,
+            filters.sortOrder,
+            this.pageNumber,
+            this.pageSize
+          )
+        ),
+        map((repos) =>
+          this.pageNumber === 1
+            ? repos.items
+            : [...this.repositories, ...repos.items]
+        ),
+        tap({
+          next: (repos) => {
+            this.repositories = repos;
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
   loadMoreRepositories(): void {
-    this.sharedRepositoryService
-      .getPageNumber()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        take(1),
-        tap((pageNumber) =>
-          this.sharedRepositoryService.setPageNumber(pageNumber + 1)
-        )
-      )
-      .subscribe();
+    this.fetchRepositories$.next();
   }
 
   toggleView(): void {

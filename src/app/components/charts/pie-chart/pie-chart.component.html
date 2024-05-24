@@ -1,40 +1,38 @@
-<div class="flex justify-center items-center gap-4 px-2">
-  <label for="sample-list" class="text-sm text-gray-500 mb-2">
-    <span class="font-bold text-pink-500">Select up to 3 languages</span>
-    to compare their repository counts in
-    <span class="font-bold text-pink-500">Pie Chart</span>:
-  </label>
+<div
+  class="flex flex-col justify-center items-center w-3/4 mx-auto mt-16 gap-4 bg-white rounded-lg shadow-lg p-6"
+>
+  <h2 class="text-lg font-semibold text-gray-800 mb-4">
+    Select up to 3 languages to compare their repository counts
+  </h2>
 
-  <ejs-multiselect
-    id="sample-list"
-    class="w-full"
-    placeholder="Search languages..."
-    [dataSource]="languages$ | async"
-    [maximumSelectionLength]="selectionLimit"
-    #multiselect
-  ></ejs-multiselect>
+  <div class="flex gap-4">
+    <ejs-multiselect
+      id="sample-list"
+      class="w-96"
+      placeholder="Search languages..."
+      [dataSource]="languages$ | async"
+      [maximumSelectionLength]="selectionLimit"
+      #multiselect
+    ></ejs-multiselect>
 
-  <button
-    type="button"
-    (click)="searchRepositoryCounts()"
-    class="text-white bg-pink-500 hover:bg-pink-700 font-medium rounded-md text-sm p-2"
-  >
-    Search
-  </button>
-</div>
+    <button
+      type="button"
+      (click)="searchRepositoryCounts()"
+      class="text-white bg-pink-500 font-semibold rounded-md text-sm px-4 py-2 hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500"
+    >
+      Search
+    </button>
+  </div>
 
-<div *ngIf="pieChartData$ | async as pieChartData">
-  <ejs-accumulationchart
-    id="chart-container"
-    [tooltip]="{ enable: true }"
-    title="Comparison of Repository Counts for Selected Languages"
-  >
-    <e-accumulation-series-collection>
-      <e-accumulation-series
-        [dataSource]="pieChartData"
-        xName="language"
-        yName="count"
-      ></e-accumulation-series>
-    </e-accumulation-series-collection>
-  </ejs-accumulationchart>
+  <div *ngIf="pieChartData$ | async as pieChartData">
+    <ejs-accumulationchart id="chart-container" [tooltip]="{ enable: true }">
+      <e-accumulation-series-collection>
+        <e-accumulation-series
+          [dataSource]="pieChartData"
+          xName="language"
+          yName="count"
+        ></e-accumulation-series>
+      </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+  </div>
 </div>

@@ -14,7 +14,6 @@ import {
   DropDownListModule,
 } from '@syncfusion/ej2-angular-dropdowns';
 import { Observable, map } from 'rxjs';
-import { SharedRepositoryService } from '../../services/shared-repository.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -26,31 +25,27 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit {
-  protected languages$!: Observable<string[]>;
-  protected sortOrders: string[] = ['asc', 'desc'];
-  protected selectedLanguage: string = 'JavaScript';
-  protected selectedSortOrder: string = 'desc';
+  languages$!: Observable<string[]>;
+  sortOrders: string[] = ['asc', 'desc'];
+  selectedLanguage: string = 'JavaScript';
+  selectedSortOrder: string = 'desc';
 
   constructor(
     private languageService: LanguageService,
     private filterService: FilterService,
-    private sharedRepositoryService: SharedRepositoryService,
     private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
-    this.fetchLanguages();
-  }
-
-  fetchLanguages(): void {
     this.languages$ = this.languageService.fetchLanguages().pipe(
-      takeUntilDestroyed(this.destroyRef),
-      map((languages: Language[]) => languages.map((language) => language.name))
+      map((languages: Language[]) =>
+        languages.map((language) => language.name)
+      ),
+      takeUntilDestroyed(this.destroyRef)
     );
   }
 
   searchRepositories(language: string, sortOrder: string): void {
-    this.sharedRepositoryService.setPageNumber(1);
     this.filterService.setFilters({ language, sortOrder });
   }
 }

@@ -1,29 +1,32 @@
 <div class="flex flex-col">
-  <div>
-    <app-search></app-search>
-  </div>
+  <app-search></app-search>
   <div class="flex justify-center mb-4">
     <button
-      class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded flex items-center"
+      type="button"
+      class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
       (click)="toggleView()"
     >
-      <i class="fa-solid fa-table-cells-large" *ngIf="showCard"></i>
-      <i class="fa-solid fa-credit-card" *ngIf="!showCard"></i>
-      <span class="ml-2">{{ showCard ? "Grid View" : "Card View" }}</span>
+      <i
+        class="fa-solid"
+        [ngClass]="
+          showCard ? 'fa-solid fa-table-cells-large' : 'fa-solid fa-credit-card'
+        "
+      ></i>
+      <span>{{ showCard ? "Grid" : "Card" }} View</span>
     </button>
   </div>
 
   <div #dataContainer class="overflow-y-auto h-[73vh]">
+    @if (showCard) {
     <app-card
-      *ngIf="showCard"
-      [repositories$]="repositories$"
-      (loadMoreRepositoriesEvent)="loadMoreRepositories()"
-    >
-    </app-card>
+      [repositories]="repositories"
+      (loadMoreRepositories)="loadMoreRepositories()"
+    />
+    } @else {
     <app-grid
-      *ngIf="!showCard"
-      [repositories$]="repositories$"
-      (loadMoreRepositoriesEvent)="loadMoreRepositories()"
-    ></app-grid>
+      [repositories]="repositories"
+      (loadMoreRepositories)="loadMoreRepositories()"
+    />
+    }
   </div>
 </div>

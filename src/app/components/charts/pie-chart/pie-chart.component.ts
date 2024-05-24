@@ -67,13 +67,11 @@ export class PieChartComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchLanguages();
-  }
-
-  fetchLanguages(): void {
     this.languages$ = this.languageService.fetchLanguages().pipe(
-      takeUntilDestroyed(this.destroyRef),
-      map((languages: Language[]) => languages.map((language) => language.name))
+      map((languages: Language[]) =>
+        languages.map((language) => language.name)
+      ),
+      takeUntilDestroyed(this.destroyRef)
     );
   }
 
@@ -88,11 +86,11 @@ export class PieChartComponent implements OnInit {
         this.repositoryService
           .fetchRepositories(language, sortOrder, pageNumber, pageSize)
           .pipe(
-            takeUntilDestroyed(this.destroyRef),
             map((response: GithubRepositoryAPIResponse) => ({
               language,
               count: response.total_count,
-            }))
+            })),
+            takeUntilDestroyed(this.destroyRef)
           )
     );
 

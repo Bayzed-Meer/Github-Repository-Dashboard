@@ -23,7 +23,7 @@ import {
   Repository,
 } from '../../../models/repository.model';
 import { RepositoryService } from '../../../services/repository.service';
-import { Observable, interval, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { BarChartData } from '../../../models/bar-chart.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -54,13 +54,11 @@ export class BarChartComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchLanguages();
-  }
-
-  fetchLanguages(): void {
     this.languages$ = this.languageService.fetchLanguages().pipe(
-      takeUntilDestroyed(this.destroyRef),
-      map((languages: Language[]) => languages.map((language) => language.name))
+      map((languages: Language[]) =>
+        languages.map((language) => language.name)
+      ),
+      takeUntilDestroyed(this.destroyRef)
     );
   }
 
@@ -73,7 +71,6 @@ export class BarChartComponent implements OnInit {
     this.barChartData$ = this.repositoryService
       .fetchRepositories(language, sortOrder, pageNumber, pageSize)
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
         map((response: GithubRepositoryAPIResponse) => {
           const repositories: Repository[] = response.items;
 
@@ -96,7 +93,8 @@ export class BarChartComponent implements OnInit {
             stars: repo.stargazers_count,
             forks: repo.forks_count,
           }));
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       );
   }
 

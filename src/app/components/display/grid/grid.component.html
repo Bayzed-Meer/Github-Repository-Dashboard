@@ -1,8 +1,5 @@
 <div class="w-3/4 mx-auto">
-  <ejs-grid
-    [dataSource]="repositories$ | async"
-    (dataBound)="onGridDataBound()"
-  >
+  <ejs-grid [dataSource]="repositories" (dataBound)="onGridDataBound()">
     <e-columns>
       <e-column field="name" headerText="Repository Name"></e-column>
       <e-column
@@ -31,7 +28,7 @@
   <div
     *ngIf="gridInitialized"
     appRepoInView
-    (targetInview)="loadMoreRepositoriesEvent.emit()"
+    (targetInview)="loadMore()"
     class="mt-2 flex justify-center items-center"
   >
     <app-loading-spinner></app-loading-spinner>
