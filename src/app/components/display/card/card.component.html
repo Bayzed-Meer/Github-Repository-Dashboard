@@ -1,54 +1,54 @@
-<div
-  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-3/4 mx-auto"
->
-  @for (repository of repositories; track $index) {
-  <div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <div class="px-6 py-4">
-      <h3 class="text-xl font-semibold text-gray-800 mb-2 repo-name">
-        {{ repository.name }}
-      </h3>
-      <p class="text-gray-600 mb-4">{{ repository.description }}</p>
-    </div>
-    <div
-      class="px-6 py-2 flex justify-between items-center border-t border-gray-200"
-    >
-      <p class="text-sm text-gray-500">
-        Language: <span class="font-semibold">{{ repository.language }}</span>
-      </p>
-      <p class="text-sm text-gray-500">
-        <i class="fa-solid fa-star text-purple-500 pr-2"></i>
-        <span class="font-semibold">{{ repository.stargazers_count }}</span>
-      </p>
-    </div>
-    <div
-      class="px-6 py-2 flex justify-between items-center border-t border-gray-200"
-    >
-      <p class="text-sm text-gray-500">
-        Last Updated:
-        <span class="font-semibold">{{ repository.updated_at | date }}</span>
-      </p>
-      <a
-        href="{{ repository.html_url }}"
-        target="_blank"
-        class="text-white text-sm font-semibold px-2 py-1 rounded-full bg-pink-500 hover:bg-pink-600 transition duration-300 ease-in-out"
-        >View
-      </a>
-    </div>
-    <div class="px-6 py-2 flex items-center border-t border-gray-200">
-      <p class="text-sm text-gray-700 font-semibold">
-        Username: {{ repository.owner.login }}
-      </p>
-    </div>
-  </div>
+<div class="w-3/4 mx-auto">
   <div
-    appRepoInView
-    *ngIf="$index === repositories.length - 1"
-    (targetInview)="loadMore()"
-    class="rounded-lg bg-white flex justify-center items-center"
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
   >
-    <app-loading-spinner></app-loading-spinner>
+    @for (repository of repositories; track $index) {
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="px-6 py-4">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2 repo-name">
+          {{ repository.name }}
+        </h3>
+        <p class="text-gray-600 mb-4">{{ repository.description }}</p>
+      </div>
+      <div
+        class="px-6 py-2 flex justify-between items-center border-t border-gray-200"
+      >
+        <p class="text-sm text-gray-500">
+          Language: <span class="font-semibold">{{ repository.language }}</span>
+        </p>
+        <p class="text-sm text-gray-500">
+          <i class="fa-solid fa-star text-purple-500 pr-2"></i>
+          <span class="font-semibold">{{ repository.stargazers_count }}</span>
+        </p>
+      </div>
+      <div
+        class="px-6 py-2 flex justify-between items-center border-t border-gray-200"
+      >
+        <p class="text-sm text-gray-500">
+          Last Updated:
+          <span class="font-semibold">{{ repository.updated_at | date }}</span>
+        </p>
+        <a
+          href="{{ repository.html_url }}"
+          target="_blank"
+          class="text-white text-sm font-semibold px-2 py-1 rounded-full bg-pink-500 hover:bg-pink-600 transition duration-300 ease-in-out"
+          >View
+        </a>
+      </div>
+      <div class="px-6 py-2 flex items-center border-t border-gray-200">
+        <p class="text-sm text-gray-700 font-semibold">
+          Username: {{ repository.owner.login }}
+        </p>
+      </div>
+    </div>
+    <div
+      appRepoInView
+      *ngIf="$index === repositories.length - 1"
+      (targetInview)="loadMore()"
+      class="rounded-lg bg-white flex justify-center items-center"
+    >
+      <app-loading-spinner></app-loading-spinner>
+    </div>
+    }
   </div>
-  } @empty {
-  <p>I dont find anything</p>
-  }
 </div>

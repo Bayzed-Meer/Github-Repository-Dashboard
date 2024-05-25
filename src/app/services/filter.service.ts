@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Filters } from '../models/filters.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilterService {
-  private filters$: BehaviorSubject<Filters> = new BehaviorSubject<Filters>({
-    language: 'JavaScript',
-    sortOrder: 'desc',
-  });
+  private filters$: Subject<Filters> = new Subject<Filters>();
 
   setFilters(filters: Filters): void {
     this.filters$.next(filters);

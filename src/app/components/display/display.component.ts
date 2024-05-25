@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../search/search.component';
 import { FilterService } from '../../services/filter.service';
-import { BehaviorSubject, map, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, of, switchMap, tap } from 'rxjs';
 import { Repository } from '../../models/repository.model';
 import { RepositoryService } from '../../services/repository.service';
 import { CardComponent } from './card/card.component';
@@ -78,14 +78,13 @@ export class DisplayComponent {
             ? repos.items
             : [...this.repositories, ...repos.items]
         ),
-        tap({
-          next: (repos) => {
-            this.repositories = repos;
-            this.cdr.detectChanges();
-          },
-          error: (error) => {
-            console.error(error);
-          },
+        tap((repos) => {
+          this.repositories = repos;
+          this.cdr.detectChanges();
+        }),
+        catchError((error) => {
+          console.error('Failed to fetch repositories...', error);
+          return of([]);
         }),
         takeUntilDestroyed(this.destroyRef)
       )

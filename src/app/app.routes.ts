@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { DisplayComponent } from './components/display/display.component';
 import { ChartsComponent } from './components/charts/charts.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'discover' },
@@ -25,5 +26,9 @@ export const routes: Routes = [
       import('./components/charts/pie-chart/pie-chart.component').then(
         (m) => m.PieChartComponent
       ),
+  },
+  {
+    path: '**',
+    component: PageNotFoundComponent,
   },
 ];

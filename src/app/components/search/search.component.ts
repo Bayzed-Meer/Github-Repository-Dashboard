@@ -13,7 +13,7 @@ import {
   AutoCompleteModule,
   DropDownListModule,
 } from '@syncfusion/ej2-angular-dropdowns';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -27,8 +27,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class SearchComponent implements OnInit {
   languages$!: Observable<string[]>;
   sortOrders: string[] = ['asc', 'desc'];
-  selectedLanguage: string = 'JavaScript';
-  selectedSortOrder: string = 'desc';
+  selectedLanguage: string = '';
+  selectedSortOrder: string = '';
 
   constructor(
     private languageService: LanguageService,
@@ -41,6 +41,10 @@ export class SearchComponent implements OnInit {
       map((languages: Language[]) =>
         languages.map((language) => language.name)
       ),
+      catchError((error) => {
+        console.error('Failed to fetch languages...', error);
+        return of([]);
+      }),
       takeUntilDestroyed(this.destroyRef)
     );
   }

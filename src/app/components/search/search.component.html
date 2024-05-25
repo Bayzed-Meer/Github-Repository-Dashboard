@@ -1,6 +1,7 @@
 <div class="flex justify-center items-center my-8 gap-8 w-3/4 mx-auto">
   <ejs-autocomplete
     id="atcelement"
+    placeholder="Enter a language"
     [dataSource]="languages$ | async"
     [(value)]="selectedLanguage"
     class="w-1/3 p-2"
@@ -8,6 +9,7 @@
 
   <ejs-dropdownlist
     id="ddlelement"
+    placeholder="Select a sort order"
     [dataSource]="sortOrders"
     [(value)]="selectedSortOrder"
     class="w-1/3 p-2"

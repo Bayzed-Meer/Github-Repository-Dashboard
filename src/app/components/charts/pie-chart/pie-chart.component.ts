@@ -28,7 +28,7 @@ import { Language } from '../../../models/language.model';
 import { RepositoryService } from '../../../services/repository.service';
 import { PieChartData } from '../../../models/pie-chart.model';
 import { GithubRepositoryAPIResponse } from '../../../models/repository.model';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -56,9 +56,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class PieChartComponent implements OnInit {
   @ViewChild('multiselect') multiselect!: MultiSelectComponent;
 
-  protected languages$!: Observable<string[]>;
+  languages$!: Observable<string[]>;
   pieChartData$!: Observable<PieChartData[]>;
-  protected selectionLimit: number = 3;
+  selectionLimit: number = 3;
 
   constructor(
     private repositoryService: RepositoryService,
@@ -71,6 +71,10 @@ export class PieChartComponent implements OnInit {
       map((languages: Language[]) =>
         languages.map((language) => language.name)
       ),
+      catchError((error) => {
+        console.error('Failed to fetch languages...', error);
+        return of([]);
+      }),
       takeUntilDestroyed(this.destroyRef)
     );
   }
@@ -90,16 +94,21 @@ export class PieChartComponent implements OnInit {
               language,
               count: response.total_count,
             })),
+            catchError((error) => {
+              console.error(`Failed to fetch repositories ...`, error);
+              return of({ language, count: 0 });
+            }),
             takeUntilDestroyed(this.destroyRef)
           )
     );
 
     this.pieChartData$ = forkJoin(languageCount$).pipe(
       map((results: PieChartData[]) => {
-        return results.map(({ language, count }) => ({
-          language,
-          count,
-        }));
+        return results.filter(({ count }) => count > 0);
+      }),
+      catchError((error) => {
+        console.error('Failed to fetch repository counts...', error);
+        return of([]);
       })
     );
   }

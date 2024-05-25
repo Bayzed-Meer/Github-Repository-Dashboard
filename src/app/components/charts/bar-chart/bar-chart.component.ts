@@ -23,7 +23,7 @@ import {
   Repository,
 } from '../../../models/repository.model';
 import { RepositoryService } from '../../../services/repository.service';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { BarChartData } from '../../../models/bar-chart.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -58,6 +58,10 @@ export class BarChartComponent implements OnInit {
       map((languages: Language[]) =>
         languages.map((language) => language.name)
       ),
+      catchError((error) => {
+        console.error('Failed to fetch languages...', error);
+        return of([]);
+      }),
       takeUntilDestroyed(this.destroyRef)
     );
   }
@@ -93,6 +97,10 @@ export class BarChartComponent implements OnInit {
             stars: repo.stargazers_count,
             forks: repo.forks_count,
           }));
+        }),
+        catchError((error) => {
+          console.error('Failed to fetch repository...', error);
+          return of([]);
         }),
         takeUntilDestroyed(this.destroyRef)
       );
