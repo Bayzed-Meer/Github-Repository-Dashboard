@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { FilterService } from './filter.service';
 import { Filters } from '../models/filters.model';
-import { take } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
-describe('FilterService', () => {
+describe('Filter Service', () => {
   let service: FilterService;
 
   beforeEach(() => {
@@ -11,18 +11,24 @@ describe('FilterService', () => {
     service = TestBed.inject(FilterService);
   });
 
-  it('should be created', () => {
+  it('should create', () => {
     expect(service).toBeTruthy();
   });
 
   it('should set and get filters', () => {
     const mockFilters: Filters = {
-      language: 'Typescript',
-      sortOrder: 'asc',
+      language: 'Java',
+      sortOrder: 'desc',
     };
+
     service.setFilters(mockFilters);
-    service.getFilters().pipe(take(1)).subscribe(filters => {
-      expect(filters).toEqual(mockFilters);
-    });
+    service
+      .getFilters()
+      .pipe(
+        tap((filters) => {
+          expect(filters).toEqual(mockFilters);
+        })
+      )
+      .subscribe();
   });
 });

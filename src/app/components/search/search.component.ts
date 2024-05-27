@@ -46,7 +46,7 @@ export class SearchComponent implements OnInit {
         languages.map((language) => language.name)
       ),
       catchError((error) => {
-        console.error('Failed to fetch languages...', error);
+        console.log('Failed to fetch languages...');
         return of([]);
       }),
       takeUntilDestroyed(this.destroyRef)

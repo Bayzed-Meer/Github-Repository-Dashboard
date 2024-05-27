@@ -1,12 +1,18 @@
-import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  tick,
+  fakeAsync,
+} from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { LanguageService } from '../../../services/language.service';
 import { RepositoryService } from '../../../services/repository.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { GithubRepositoryAPIResponse } from '../../../models/repository.model';
+import { Language } from '../../../models/language.model';
 
-xdescribe('BarChartComponent', () => {
+describe('BarChartComponent', () => {
   let component: BarChartComponent;
   let fixture: ComponentFixture<BarChartComponent>;
 
@@ -27,13 +33,13 @@ xdescribe('BarChartComponent', () => {
           login: 'owner1',
         },
         html_url: 'https://github.com/repo1',
-      }
+      },
     ],
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, BarChartComponent], 
+      imports: [HttpClientTestingModule, BarChartComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BarChartComponent);
@@ -41,7 +47,7 @@ xdescribe('BarChartComponent', () => {
 
     languageService = TestBed.inject(LanguageService);
     repositoryService = TestBed.inject(RepositoryService);
-    
+
     const { getComputedStyle } = window;
     window.getComputedStyle = (elt) => getComputedStyle(elt);
     fixture.detectChanges();
@@ -57,13 +63,48 @@ xdescribe('BarChartComponent', () => {
     expect(fetchLanguagesSpy).toHaveBeenCalled();
   });
 
-  it('should fetch repositories and set barChartData$ on searchTopTenRepositories', fakeAsync(() => {
+  it('should fetch languages successfully', (done) => {
+    const mockData: Language[] = [{ name: 'java' }];
+    jest.spyOn(languageService, 'fetchLanguages').mockReturnValue(of(mockData));
+    component.fetchLanguages();
+    component.languages$.subscribe((languages) => {
+      expect(languages).toEqual(['java']);
+      done();
+    });
+  });
+
+  it('should handle error when fetching languages', (done) => {
+    const mockError = new Error('Failed to fetch languages...');
+    jest
+      .spyOn(languageService, 'fetchLanguages')
+      .mockReturnValue(throwError(() => mockError));
+    component.fetchLanguages();
+    component.languages$.subscribe((languagues) => {
+      expect(languagues).toEqual([]);
+      done();
+    });
+  });
+
+  it('should fetch repositories and set barChartData$', () => {
     const language = 'TypeScript';
-    const fetchRepositoriesSpy = jest.spyOn(repositoryService, 'fetchRepositories').mockReturnValue(of(mockApiResponse));
-    component.selectedLanguage = language;
-    component.searchTopTenRepositories();
-    tick();
+    const fetchRepositoriesSpy = jest
+      .spyOn(repositoryService, 'fetchRepositories')
+      .mockReturnValue(of(mockApiResponse));
+    component.fetchRepositories(language);
     expect(fetchRepositoriesSpy).toHaveBeenCalledWith(language, 'desc', 1, 10);
     expect(component.barChartData$).toBeDefined();
-  }));
+  });
+
+  it('should handle error when fetching repositories', (done) => {
+    const mockError = new Error('Failed to fetch repository...');
+    jest
+      .spyOn(repositoryService, 'fetchRepositories')
+      .mockReturnValue(throwError(() => mockError));
+
+    component.fetchRepositories('JavaScript');
+    component.barChartData$.subscribe((data) => {
+      expect(data).toEqual([]);
+      done();
+    });
+  });
 });

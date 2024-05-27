@@ -22,7 +22,7 @@ export class CardComponent {
   @Input() repositories: Repository[] = [];
   @Output() loadMoreRepositories = new EventEmitter<void>();
 
-  protected loadMore(): void {
+  loadMore(): void {
     this.loadMoreRepositories.emit();
   }
 }

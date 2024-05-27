@@ -28,7 +28,7 @@ export class GridComponent {
   @Input() repositories: Repository[] = [];
   @Output() loadMoreRepositories = new EventEmitter<void>();
 
-  protected loadMore(): void {
+  loadMore(): void {
     this.loadMoreRepositories.emit();
   }
 

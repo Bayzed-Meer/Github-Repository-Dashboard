@@ -87,7 +87,7 @@ export class DisplayComponent {
           this.cdr.detectChanges();
         }),
         catchError((error) => {
-          console.error('Failed to fetch repositories...', error);
+          console.log('Failed to fetch repositories...');
           return of([]);
         }),
         takeUntilDestroyed(this.destroyRef)

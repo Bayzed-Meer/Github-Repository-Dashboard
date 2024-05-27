@@ -6,7 +6,7 @@ import {
 import { RepositoryService } from './repository.service';
 import { GithubRepositoryAPIResponse } from '../models/repository.model';
 
-xdescribe('RepositoryService', () => {
+describe('Repository Service', () => {
   let service: RepositoryService;
   let httpMock: HttpTestingController;
 
@@ -26,7 +26,7 @@ xdescribe('RepositoryService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch repositories successfully', () => {
+  it('should fetch repositories successfully', (done) => {
     const mockLanguage = 'JavaScript';
     const mockSortOrder = 'desc';
     const mockPageNumber = 1;
@@ -57,6 +57,7 @@ xdescribe('RepositoryService', () => {
       )
       .subscribe((response) => {
         expect(response).toEqual(mockResponse);
+        done();
       });
 
     const req = httpMock.expectOne((request) =>

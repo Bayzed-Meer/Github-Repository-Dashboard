@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http/testing';
 import { Language } from '../models/language.model';
 
-xdescribe('LanguageService', () => {
+describe('LanguageService', () => {
   let service: LanguageService;
   let httpMock: HttpTestingController;
 
@@ -22,20 +22,18 @@ xdescribe('LanguageService', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
+  it('should create', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch languages', () => {
-    const mockLanguages: Language[] = [{ name: 'JavaScript' }];
-
+  it('should fetch languages', (done) => {
+    const mockLanguages: Language[] = [{ name: 'java' }];
     service.fetchLanguages().subscribe((languages) => {
       expect(languages).toEqual(mockLanguages);
+      done();
     });
-
     const req = httpMock.expectOne('https://api.github.com/languages');
     expect(req.request.method).toBe('GET');
-
     req.flush(mockLanguages);
   });
 });

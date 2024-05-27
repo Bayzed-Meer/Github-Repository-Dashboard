@@ -76,14 +76,14 @@ export class PieChartComponent implements OnInit {
         languages.map((language) => language.name)
       ),
       catchError((error) => {
-        console.error('Failed to fetch languages...', error);
+        console.log('Failed to fetch languages...');
         return of([]);
       }),
       takeUntilDestroyed(this.destroyRef)
     );
   }
 
-  private fetchRepositoryCounts(
+  fetchRepositoryCounts(
     languages: string[],
     sortOrder: string,
     pageNumber: number,
@@ -99,7 +99,7 @@ export class PieChartComponent implements OnInit {
               count: response.total_count,
             })),
             catchError((error) => {
-              console.error(`Failed to fetch repositories ...`, error);
+              console.log(`Failed to fetch repositories ...`);
               return of({ language, count: 0 });
             }),
             takeUntilDestroyed(this.destroyRef)
@@ -111,7 +111,7 @@ export class PieChartComponent implements OnInit {
         return results.filter(({ count }) => count > 0);
       }),
       catchError((error) => {
-        console.error('Failed to fetch repository counts...', error);
+        console.error('Failed to fetch repository counts...');
         return of([]);
       })
     );

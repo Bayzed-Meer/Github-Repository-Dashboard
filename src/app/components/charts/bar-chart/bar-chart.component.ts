@@ -63,21 +63,16 @@ export class BarChartComponent implements OnInit {
         languages.map((language) => language.name)
       ),
       catchError((error) => {
-        console.error('Failed to fetch languages...', error);
+        console.log('Failed to fetch languages...');
         return of([]);
       }),
       takeUntilDestroyed(this.destroyRef)
     );
   }
 
-  private fetchRepositories(
-    language: string,
-    sortOrder: string,
-    pageNumber: number,
-    pageSize: number
-  ): void {
+  fetchRepositories(language: string): void {
     this.barChartData$ = this.repositoryService
-      .fetchRepositories(language, sortOrder, pageNumber, pageSize)
+      .fetchRepositories(language, 'desc', 1, 10)
       .pipe(
         map((response: GithubRepositoryAPIResponse) => {
           const repositories: Repository[] = response.items;
@@ -103,14 +98,10 @@ export class BarChartComponent implements OnInit {
           }));
         }),
         catchError((error) => {
-          console.error('Failed to fetch repository...', error);
+          console.log('Failed to fetch repository...');
           return of([]);
         }),
         takeUntilDestroyed(this.destroyRef)
       );
-  }
-
-  searchTopTenRepositories(): void {
-    this.fetchRepositories(this.selectedLanguage, 'desc', 1, 10);
   }
 }

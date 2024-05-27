@@ -3,8 +3,10 @@ import { SearchComponent } from './search.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LanguageService } from '../../services/language.service';
 import { FilterService } from '../../services/filter.service';
+import { Language } from '../../models/language.model';
+import { of, throwError } from 'rxjs';
 
-xdescribe('SearchComponent', () => {
+describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
 
@@ -24,6 +26,7 @@ xdescribe('SearchComponent', () => {
 
     const { getComputedStyle } = window;
     window.getComputedStyle = (elt) => getComputedStyle(elt);
+
     fixture.detectChanges();
   });
 
@@ -31,9 +34,39 @@ xdescribe('SearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch languages on ngOnInit', () => {
+  it('should call fetchLanguages function on ngOnInit', () => {
     const fetchLanguagesSpy = jest.spyOn(component, 'fetchLanguages');
     component.ngOnInit();
     expect(fetchLanguagesSpy).toHaveBeenCalled();
+  });
+
+  it('should fetch languages successfully', (done) => {
+    const mockData: Language[] = [{ name: 'java' }];
+    jest.spyOn(languageService, 'fetchLanguages').mockReturnValue(of(mockData));
+    component.fetchLanguages();
+    component.languages$.subscribe((languages) => {
+      expect(languages).toEqual(['java']);
+      done();
+    });
+  });
+
+  it('should handle error when fetching languages', (done) => {
+    const mockError = new Error('Failed to fetch languages...');
+    jest
+      .spyOn(languageService, 'fetchLanguages')
+      .mockReturnValue(throwError(() => mockError));
+    component.fetchLanguages();
+    component.languages$.subscribe((languagues) => {
+      expect(languagues).toEqual([]);
+      done();
+    });
+  });
+
+  it('should call set correct filters', () => {
+    const filterSpy = jest.spyOn(filterService, 'setFilters');
+    const language = 'java';
+    const sortOrder = 'desc';
+    component.searchRepositories(language, sortOrder);
+    expect(filterSpy).toHaveBeenCalledWith({ language, sortOrder });
   });
 });

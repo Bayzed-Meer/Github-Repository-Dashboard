@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
 import { GridComponent } from './grid.component';
 import { Repository } from '../../../models/repository.model';
 
-xdescribe('GridComponent', () => {
+describe('GridComponent', () => {
   let component: GridComponent;
   let fixture: ComponentFixture<GridComponent>;
 
@@ -45,5 +44,19 @@ xdescribe('GridComponent', () => {
 
   it('should have output property loadMoreRepositoriesEvent', () => {
     expect(component.loadMoreRepositories).toBeDefined();
+  });
+
+  it('should set repositories', () => {
+    component.repositories = mockRepositories;
+    expect(component.repositories.length).toEqual(1);
+  });
+
+  it('should emit loadMoreRepositories when loadMore is called', () => {
+    const loadMoreRepositoriesSpy = jest.spyOn(
+      component.loadMoreRepositories,
+      'emit'
+    );
+    component.loadMore();
+    expect(loadMoreRepositoriesSpy).toHaveBeenCalled();
   });
 });

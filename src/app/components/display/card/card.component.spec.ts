@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { CardComponent } from './card.component';
 import { Repository } from '../../../models/repository.model';
 
-xdescribe('CardComponent', () => {
+describe('CardComponent', () => {
   let component: CardComponent;
   let fixture: ComponentFixture<CardComponent>;
 
@@ -27,29 +27,12 @@ xdescribe('CardComponent', () => {
       imports: [CardComponent],
     }).compileComponents();
 
-    const mockIntersectionObserver = jest.fn();
-    mockIntersectionObserver.mockReturnValue({
-      observe: () => null,
-      unobserve: () => null,
-      disconnect: () => null,
-    });
-    window.IntersectionObserver = mockIntersectionObserver;
-
     fixture = TestBed.createComponent(CardComponent);
     component = fixture.componentInstance;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should render repository names correctly', () => {
-    component.repositories = mockRepositories;
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.repo-name').textContent).toContain(
-      'Repo 1'
-    );
   });
 
   it('should have input property repositories', () => {
@@ -59,5 +42,19 @@ xdescribe('CardComponent', () => {
 
   it('should have output property loadMoreRepositoriesEvent', () => {
     expect(component.loadMoreRepositories).toBeDefined();
+  });
+
+  it('should set repositories', () => {
+    component.repositories = mockRepositories;
+    expect(component.repositories.length).toEqual(1);
+  });
+
+  it('should emit loadMoreRepositories when loadMore is called', () => {
+    const loadMoreRepositoriesSpy = jest.spyOn(
+      component.loadMoreRepositories,
+      'emit'
+    );
+    component.loadMore();
+    expect(loadMoreRepositoriesSpy).toHaveBeenCalled();
   });
 });

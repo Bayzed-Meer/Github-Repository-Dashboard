@@ -1,15 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ChartsComponent } from './charts.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-xdescribe('ChartsComponent', () => {
+describe('ChartsComponent', () => {
   let component: ChartsComponent;
   let fixture: ComponentFixture<ChartsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChartsComponent, HttpClientTestingModule],
+      imports: [ChartsComponent, HttpClientTestingModule, RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChartsComponent);

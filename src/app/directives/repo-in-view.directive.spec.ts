@@ -1,7 +1,7 @@
 import { RepoInViewDirective } from './repo-in-view.directive';
 import { ElementRef } from '@angular/core';
 
-xdescribe('RepoInViewDirective', () => {
+describe('RepoInViewDirective', () => {
   let mockElementRef: ElementRef<HTMLElement>;
 
   beforeEach(() => {
