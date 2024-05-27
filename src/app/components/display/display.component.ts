@@ -46,6 +46,10 @@ export class DisplayComponent {
   ) {}
 
   ngOnInit(): void {
+    this.fetchRepositories();
+  }
+
+  fetchRepositories(): void {
     this.fetchRepositories$
       .pipe(
         switchMap(() => this.filterService.getFilters()),

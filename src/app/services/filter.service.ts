@@ -6,7 +6,10 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class FilterService {
-  private filters$: Subject<Filters> = new Subject<Filters>();
+  private filters$: BehaviorSubject<Filters> = new BehaviorSubject<Filters>({
+    language: 'JavaScript',
+    sortOrder: 'desc',
+  });
 
   setFilters(filters: Filters): void {
     this.filters$.next(filters);

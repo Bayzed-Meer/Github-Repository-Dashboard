@@ -27,8 +27,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class SearchComponent implements OnInit {
   languages$!: Observable<string[]>;
   sortOrders: string[] = ['asc', 'desc'];
-  selectedLanguage: string = '';
-  selectedSortOrder: string = '';
+  selectedLanguage: string = 'Javascript';
+  selectedSortOrder: string = 'desc';
 
   constructor(
     private languageService: LanguageService,
@@ -37,6 +37,10 @@ export class SearchComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.fetchLanguages();
+  }
+
+  fetchLanguages(): void {
     this.languages$ = this.languageService.fetchLanguages().pipe(
       map((languages: Language[]) =>
         languages.map((language) => language.name)

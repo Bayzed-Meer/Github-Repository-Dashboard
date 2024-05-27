@@ -54,6 +54,10 @@ export class BarChartComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.fetchLanguages();
+  }
+
+  fetchLanguages(): void {
     this.languages$ = this.languageService.fetchLanguages().pipe(
       map((languages: Language[]) =>
         languages.map((language) => language.name)
