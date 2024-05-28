@@ -1,4 +1,4 @@
-<nav class="shadow-md mb-2">
+<nav class="shadow-md mb-2" data-cy="navbar">
   <div class="flex justify-between items-center mx-auto py-3 w-3/4">
     <div class="flex gap-4 cursor-pointer" routerLink="discover">
       <img src="../../../assets/logo.png" alt="github" class="h-6" />
@@ -7,14 +7,16 @@
 
     <div class="flex gap-8 text-base font-serif">
       <div
-        class="cursor-pointer discover"
+        data-cy="discover"
+        class="cursor-pointer"
         routerLink="discover"
         routerLinkActive="text-pink-500"
       >
         Discover
       </div>
       <div
-        class="cursor-pointer charts"
+        data-cy="charts"
+        class="cursor-pointer"
         routerLink="charts"
         routerLinkActive="text-pink-500"
       >

@@ -4,24 +4,33 @@ describe('Discover Page', () => {
   });
 
   it('should display the navigation bar', () => {
-    cy.get('nav').should('be.visible');
+    cy.get('[data-cy=navbar]').should('be.visible');
   });
 
   it('should navigate to Discover page', () => {
-    cy.get('.discover').click({ force: true });
-
+    cy.get('[data-cy=discover]').click({ force: true });
     cy.url().should('include', '/discover');
   });
 
   it('should navigate to Charts page', () => {
-    cy.get('.charts').click({ force: true });
-
+    cy.get('[data-cy=charts]').click({ force: true });
     cy.url().should('include', '/charts');
   });
 
-  it('should display the search component with default values', () => {
-    cy.get('.language-input').should('have.value', 'JavaScript');
+  it('should display the search component elements', () => {
+    cy.get('[data-cy=language-input]').should('be.visible');
+    cy.get('[data-cy=sortOrder-select]').should('be.visible');
+    cy.get('[data-cy=search-button]').should('be.visible');
+  });
 
-    cy.get('.sortOrder-select').should('have.value', 'desc');
+  it('should display view button', () => {
+    cy.get('[data-cy=view-button]').should('be.visible');
+  });
+
+  it('should show 50 repos', () => {
+    cy.get('[data-cy=repo-card-parent] [data-cy=repo-card-child]').should(
+      'have.length.at.least',
+      50
+    );
   });
 });

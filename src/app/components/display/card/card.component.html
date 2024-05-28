@@ -1,9 +1,13 @@
 <div class="w-3/4 mx-auto">
   <div
+    data-cy="repo-card-parent"
     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
   >
     @for (repository of repositories; track $index) {
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div
+      class="bg-white rounded-lg shadow-md overflow-hidden"
+      data-cy="repo-card-child"
+    >
       <div class="px-6 py-4">
         <h3 class="text-xl font-semibold text-gray-800 mb-2 repo-name">
           {{ repository.name }}

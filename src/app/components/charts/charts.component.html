@@ -1,9 +1,10 @@
-<div class="container mx-auto w-3/4 mt-24">
-  <h1 class="text-2xl text-center font-semibold mb-12">
+<div class="mx-auto w-3/4 mt-24" data-cy="charts">
+  <h1 class="text-2xl text-center font-semibold mb-12" data-cy="charts-title">
     Choose a Chart to Compare Repositories
   </h1>
   <div class="flex justify-around">
     <div
+      data-cy="charts-piechart"
       routerLink="/charts/piechart"
       class="transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
     >
@@ -19,6 +20,7 @@
       </div>
     </div>
     <div
+      data-cy="charts-barchart"
       routerLink="/charts/barchart"
       class="transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
     >
