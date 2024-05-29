@@ -7,7 +7,7 @@
 
   <div class="flex gap-4">
     <ejs-multiselect
-      id="sample-list"
+      id="multiselectelement"
       class="w-96"
       placeholder="Search languages..."
       [dataSource]="languages$ | async"
@@ -17,6 +17,7 @@
 
     <button
       type="button"
+      data-cy="search-button"
       (click)="searchRepositoryCounts()"
       class="text-white bg-pink-500 font-semibold rounded-md text-sm px-4 py-2 hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500"
     >

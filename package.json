@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "e2e": "npx cypress open",
+    "explore": "source-map-explorer dist/**/*.js"
   },
   "private": true,
   "dependencies": {
@@ -18,11 +20,9 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
-    "@fortawesome/fontawesome-free": "^6.5.2",
     "@syncfusion/ej2-angular-charts": "^25.1.42",
     "@syncfusion/ej2-angular-dropdowns": "^25.1.41",
     "@syncfusion/ej2-angular-grids": "^25.1.41",
-    "@syncfusion/ej2-angular-layouts": "^25.1.37",
     "@syncfusion/ej2-material-theme": "~25.1.41",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -38,6 +38,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.38",
+    "source-map-explorer": "^2.5.3",
     "tailwindcss": "^3.4.3",
     "typescript": "~5.4.2"
   }

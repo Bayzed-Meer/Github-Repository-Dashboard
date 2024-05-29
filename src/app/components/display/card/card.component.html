@@ -21,7 +21,13 @@
           Language: <span class="font-semibold">{{ repository.language }}</span>
         </p>
         <p class="text-sm text-gray-500">
-          <i class="fa-solid fa-star text-purple-500 pr-2"></i>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="fill-current w-6 h-6 text-purple-500 inline-block mr-1"
+          >
+            <path d="M12 2l-2 6h-6l5 4-2 6 5-4 5 4-2-6 5-4h-6z" />
+          </svg>
           <span class="font-semibold">{{ repository.stargazers_count }}</span>
         </p>
       </div>

@@ -8,6 +8,7 @@
   <div class="flex gap-4">
     <ejs-autocomplete
       id="atcelement"
+      data-cy="search-input"
       placeholder="Search Language..."
       [dataSource]="languages$ | async"
       [(value)]="selectedLanguage"
@@ -16,6 +17,7 @@
 
     <button
       type="button"
+      data-cy="search-button"
       (click)="fetchRepositories(this.selectedLanguage)"
       class="text-white bg-pink-500 hover:bg-pink-700 font-medium rounded-md text-sm p-2"
     >
@@ -28,6 +30,7 @@
   >
     <ejs-chart
       id="container"
+      data-cy="barchart"
       [primaryXAxis]="{
         valueType: 'Category',
         title: 'Stars',

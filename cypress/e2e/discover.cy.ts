@@ -27,7 +27,15 @@ describe('Discover Page', () => {
     cy.get('[data-cy=view-button]').should('be.visible');
   });
 
-  it('should show 50 repos', () => {
+  it('should show 50 repos by default', () => {
+    cy.get('[data-cy=repo-card-parent] [data-cy=repo-card-child]').should(
+      'have.length.at.least',
+      50
+    );
+  });
+
+  it('should search repositories work', () => {
+    cy.get('[data-cy=search-button]').click({ force: true });
     cy.get('[data-cy=repo-card-parent] [data-cy=repo-card-child]').should(
       'have.length.at.least',
       50

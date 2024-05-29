@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
   MultiSelectComponent,
@@ -39,8 +39,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     AutoCompleteModule,
     DropDownListModule,
     MultiSelectModule,
+    AutoCompleteModule,
     FormsModule,
     CommonModule,
+    ReactiveFormsModule,
   ],
   providers: [
     PieSeriesService,
