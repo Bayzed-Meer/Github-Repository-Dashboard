@@ -11,5 +11,4 @@ import { NavbarComponent } from './components/navbar/navbar.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  title = 'Github-Repository-Dashboard';
 }
